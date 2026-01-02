@@ -6,6 +6,11 @@ export const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
   import.meta.env.VITE_SUPABASE_ANON_KEY
 );
+console.log(
+  "Supabase env check:",
+  !!import.meta.env.VITE_SUPABASE_URL,
+  !!import.meta.env.VITE_SUPABASE_ANON_KEY
+);
 
 export default function App() {
   const [showModal, setShowModal] = useState(true);
@@ -65,27 +70,25 @@ export default function App() {
     const longest = Math.max(...burst.map((p) => p.duration + p.delay));
     setTimeout(() => setParticles([]), longest + 500);
   };
-  const handleJoinWaitlist = () => {
-    // 1. Prepare tracking payload
-    const payload = JSON.stringify({
-      intent: "whatsapp_click",
-      source: "landing_page",
-      created_at: new Date().toISOString(),
-    });
+  const handleJoinWaitlist = async () => {
+    const whatsappUrl =
+      "https://wa.me/2347030318983?text=Hi%20I%20want%20early%20access%20to%20Gainly.";
 
-    // 2. Fire tracking via sendBeacon (survives navigation)
-    navigator.sendBeacon(
-      "https://YOUR_PROJECT_ID.supabase.co/rest/v1/waitlist_events",
-      new Blob([payload], {
-        type: "application/json",
-      })
-    );
+    const insertPromise = supabase.from("waitlist_events").insert([
+      {
+        intent: "whatsapp_click",
+        source: "landing_page",
+      },
+    ]);
 
-    // 3. Redirect IMMEDIATELY (no delay, no await)
-    window.open(
-      "https://wa.me/2347030318983?text=Hi%20I%20want%20early%20access%20to%20Gainly.",
-      "_blank"
-    );
+    // Race the insert against a short timeout (150ms)
+    await Promise.race([
+      insertPromise,
+      new Promise((resolve) => setTimeout(resolve, 150)),
+    ]);
+
+    // Redirect immediately after
+    window.open(whatsappUrl, "_blank");
   };
 
   return (
