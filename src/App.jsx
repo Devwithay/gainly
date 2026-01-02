@@ -216,11 +216,9 @@ export default function App() {
           <h2>Get early access</h2>
           <p>We’re opening this first to Unilorin students.</p>
 
-          <a
-            href="https://wa.me/2347030318983?text=Hi%20I%20want%20early%20access%20to%20Gainly."
-            className="cta-btn shine">
+          <button onClick={handleJoinWaitlist} className="cta-btn shine">
             Join WhatsApp Waitlist
-          </a>
+          </button>
         </section>
         <footer className="footer">
           © {new Date().getFullYear()} Gainly — Built for Unilorin student
