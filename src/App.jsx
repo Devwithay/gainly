@@ -112,9 +112,10 @@ export default function App() {
           <div className="modal-card glass">
             <h2>Welcome to Gainly 👋</h2>
             <p>
-              Built for student business owners who are tired of guessing and
-              saying “we thank God”.
+              Built for student business owners who want clear numbers,
+              consistent visibility, and confident business decisions.
             </p>
+
             <button
               onClick={() => {
                 triggerParticles();
@@ -156,56 +157,63 @@ export default function App() {
           <div className="logo-glow">Gainly</div>
 
           <h1>
-            Stop forgetting to market.
+            Build consistency.
             <br />
-            <span>Start knowing where your money goes.</span>
+            <span>Understand your business numbers.</span>
           </h1>
 
           <p>
-            Gainly helps student business owners track sales, get reminders, and
-            know what to do next.
+            Gainly helps you track sales, stay visible to customers, and make
+            smarter decisions — without complexity.
           </p>
 
           <button onClick={handleJoinWaitlist} className="cta-btn shine">
-            Join WhatsApp Waitlist
+            Join our WhatsApp Waitlist
           </button>
         </section>
 
         <section className="section glass">
-          <h2>Be honest — this has happened to you</h2>
+          <h2>Growing a student business comes with real challenges</h2>
           <ul>
-            <li>Planned to post but forgot</li>
-            <li>Made sales but don't know total</li>
-            <li>Say “we thank God” when asked about business</li>
-            <li>Some weeks dry, no idea why</li>
+            <li>Marketing can sometimes be inconsistent during busy weeks</li>
+            <li>Sales happen daily, but totals aren’t always clear</li>
+            <li>
+              Some products sell faster than others — without obvious patterns
+            </li>
+            <li>Growth feels unpredictable, even with hard work</li>
           </ul>
+          <p>
+            That's is where{" "}
+            <span style={{ color: "green", fontWeight: "bolder" }}>Gainly</span>{" "}
+            comes in.
+          </p>
         </section>
 
         <section className="section">
-          <h2>One tool. Three habits.</h2>
+          <h2>One platform. Three growth systems.</h2>
 
           <div className="card-grid">
             <div className="card glass">
-              <h3>Marketing Reminders</h3>
+              <h3>Strategic Visibility</h3>
               <p>
-                Never forget to post again. Get timely nudges on when and what
-                to promote so your business stays visible.
+                Stay top-of-mind with customers through smart reminders on when
+                and what to promote — based on your activity.
               </p>
             </div>
 
             <div className="card glass">
-              <h3>Sales Tracking</h3>
+              <h3>Sales Clarity</h3>
               <p>
-                Know what's selling and when. Log sales in seconds and see
-                what’s selling, when, and to who — no accounting stress.
+                Record sales in seconds and see clear totals by day, product,
+                and period — without spreadsheets.
               </p>
             </div>
 
             <div className="card glass">
-              <h3>Simple Insights</h3>
+              <h3>Actionable Insights</h3>
               <p>
-                Clear advice, no confusing charts. Clear advice like “Post
-                earlier on Fridays” or “Your top seller is Hair Oil.”
+                Go beyond vibes. Understand what’s working, what needs
+                attention, and where your profit truly comes from.
               </p>
             </div>
           </div>
@@ -221,12 +229,16 @@ export default function App() {
 
         <section className="section cta-section glass">
           <h2>Get early access</h2>
-          <p>We’re opening this first to Unilorin students.</p>
+          <p>
+            We’re onboarding a small group of Unilorin student vendors to shape
+            the first version of Gainly.
+          </p>
 
           <button onClick={handleJoinWaitlist} className="cta-btn shine">
-            Join WhatsApp Waitlist
+            Join our WhatsApp Waitlist
           </button>
         </section>
+
         <footer className="footer">
           © {new Date().getFullYear()} Gainly — Built for Unilorin student
           vendors
