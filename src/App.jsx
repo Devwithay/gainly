@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import "./App.css";
 import { createClient } from "@supabase/supabase-js";
 
+import FeatureRequest from "./FeatureRequest";
+
 export const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
   import.meta.env.VITE_SUPABASE_ANON_KEY
@@ -238,7 +240,7 @@ export default function App() {
             Join our WhatsApp Waitlist
           </button>
         </section>
-
+        <FeatureRequest />
         <footer className="footer">
           © {new Date().getFullYear()} Gainly — Built for Unilorin student
           vendors
