@@ -110,38 +110,51 @@ export default function App() {
       )}
 
       {showModal && (
-        <div className="modal-overlay">
-          <div className="modal-card glass">
-            <h2>Welcome to Gainly 👋</h2>
-            <p>
-              Built for student business owners who want clear numbers,
-              consistent visibility, and confident business decisions.
+        <div className="modal-overlay" role="dialog" aria-modal="true">
+          <div className="modal-card glass" aria-labelledby="welcome-title">
+            <h2 id="welcome-title" className="modal-headline">
+              Turn your Student Business into a Brand 🚀
+            </h2>
+
+            <p className="modal-subhead">
+              Gainly helps you grow smart, track every Naira, and stay
+              consistent. Join the league of elite Unilorin vendors.
             </p>
 
-            <button
-              onClick={() => {
-                triggerParticles();
-                setTimeout(() => setShowModal(false), 400);
-              }}>
-              Enter Gainly
-            </button>
-            <div className="particle-layer">
-              {particles.map((p) => (
+            <div className="modal-actions">
+              {/* Enter (reveal the site) */}
+              <button
+                className="cta-btn modal-enter"
+                onClick={() => {
+                  // spark particles and reveal
+                  triggerParticles?.();
+                  setTimeout(() => setShowModal(false), 450);
+                }}>
+                Enter Gainly
+              </button>
+
+              {/* Join Waitlist (keeps instant feeling via handleJoinWaitlist) */}
+              <button className="cta-btn outline" onClick={handleJoinWaitlist}>
+                Join Waitlist
+              </button>
+            </div>
+
+            <div className="lead-badge" aria-hidden="true">
+              🎁 Plus: Get our <strong>'Vendor Growth Blueprint'</strong> free
+              when you join the waitlist.
+            </div>
+
+            {/* Particles layer stays here (if you had it) */}
+            <div className="particle-layer" aria-hidden="true">
+              {particles?.map((p) => (
                 <span
                   key={p.id}
                   className="particle"
-                  data-shape={p.shape === "circle" ? "circle" : "rect"}
                   style={{
-                    width: `${p.size}px`,
-                    height: `${p.size}px`,
-                    background: p.color,
-
-                    "--x": `${p.vx}px`,
-                    "--y": `${p.vy}px`,
-                    "--rot": p.rot,
-
-                    animationDuration: `${p.duration}ms`,
-                    animationDelay: `${p.delay}ms`,
+                    width: p.size,
+                    height: p.size,
+                    "--x": `${p.x}px`,
+                    "--y": `${p.y}px`,
                   }}
                 />
               ))}
@@ -155,22 +168,32 @@ export default function App() {
       <div className="blob blob-3"></div>
 
       <main className={`app ${showModal ? "blurred" : ""}`}>
-        <section className="hero">
+        <section className="hero" aria-labelledby="hero-title">
           <div className="logo-glow">Gainly</div>
 
-          <h1>
-            Build consistency.
+          <h1 id="hero-title" className="hero-title">
+            Turn your Student Business into a Brand 🚀
             <br />
-            <span>Understand your business numbers.</span>
+            <span className="hero-subtitle">
+              Gainly helps you grow smart, track every Naira, and stay
+              consistent. Join the league of elite Unilorin vendors.
+            </span>
           </h1>
 
-          <p>
-            Gainly helps you track sales, stay visible to customers, and make
-            smarter decisions — without complexity.
+          <p className="hero-niche">
+            Tailored for Bakers, Fashion Designers, Data Vendors, and every
+            student hustler.
           </p>
 
-          <button onClick={handleJoinWaitlist} className="cta-btn shine">
-            Join our WhatsApp Waitlist
+          <p className="hero-desc">
+            Gainly you track sales, stay visible to customers, and make smarter
+            decisions — without complexity.
+          </p>
+
+          <button
+            onClick={handleJoinWaitlist}
+            className="cta-btn shine hero-cta">
+            Join WhatsApp Waitlist
           </button>
         </section>
 
