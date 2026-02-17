@@ -1,0 +1,155 @@
+.mobile-optimized {
+  padding: 15px;
+  background: #0f0f12;
+  min-height: 100vh;
+  color: white;
+}
+
+.summary-card {
+  display: flex;
+  justify-content: space-around;
+  padding: 20px;
+  margin-bottom: 20px;
+  background: linear-gradient(
+    135px,
+    rgba(124, 77, 255, 0.2),
+    rgba(0, 0, 0, 0.3)
+  );
+  border: 1px solid rgba(124, 77, 255, 0.3);
+  text-align: center;
+}
+
+.summary-divider {
+  width: 1px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.label {
+  font-size: 0.75rem;
+  color: #aaa;
+  text-transform: uppercase;
+}
+.val {
+  font-size: 1.2rem;
+  margin-top: 5px;
+}
+.profit-text {
+  color: #22c55e;
+}
+
+.filter-section {
+  margin-bottom: 20px;
+}
+.filter-section label {
+  font-size: 0.8rem;
+  color: #888;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.mobile-select {
+  width: 100%;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid #333;
+  border-radius: 10px;
+  color: black;
+  font-size: 1rem;
+}
+
+.sale-item-v2 {
+  padding: 15px;
+  margin-bottom: 12px;
+  border-left: 4px solid #7c4dff;
+}
+
+.sale-main-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.category-tag {
+  font-size: 0.65rem;
+  background: rgba(124, 77, 255, 0.2);
+  color: #7c4dff;
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.sale-brand-info h4 {
+  margin: 5px 0;
+  font-size: 1rem;
+}
+.type-label {
+  font-size: 0.7rem;
+  color: #666;
+  text-transform: capitalize;
+}
+
+.sale-price-info {
+  text-align: right;
+}
+.status-tag {
+  display: block;
+  font-size: 0.7rem;
+  margin-top: 5px;
+  font-weight: bold;
+}
+.status-tag.owing {
+  color: #ef4444;
+}
+.status-tag.paid {
+  color: #22c55e;
+}
+
+.sale-footer-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  align-items: center;
+}
+
+.profit-badge {
+  font-size: 0.85rem;
+  color: #22c55e;
+  font-weight: 600;
+}
+
+.date-text {
+  font-size: 0.75rem;
+  color: #555;
+}
+
+.niche-filter-bar {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 10px 5px;
+  margin-bottom: 15px;
+  scrollbar-width: none; /* Hide scrollbar Firefox */
+}
+.niche-filter-bar::-webkit-scrollbar {
+  display: none;
+} /* Hide scrollbar Chrome */
+
+.filter-pill {
+  white-space: nowrap;
+  padding: 8px 16px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.filter-pill.active {
+  background: #7c4dff;
+  border-color: #7c4dff;
+  color: white;
+}

@@ -1,0 +1,142 @@
+.receipt-paper {
+  background: white;
+  color: #1a1a1a;
+  padding: 40px 20px;
+  border-radius: 4px;
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.receipt-header {
+  text-align: center;
+  border-bottom: 2px dashed #ccc;
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+}
+
+.receipt-header h2 {
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.r-line {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.r-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.receipt-footer {
+  text-align: center;
+  font-size: 10px;
+  margin-top: 30px;
+  opacity: 0.5;
+}
+
+.share-btn {
+  background: #25d366;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.back-to-list {
+  background: transparent;
+  border: none;
+  color: var(--text);
+  width: 100%;
+  margin-top: 15px;
+  cursor: pointer;
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+.receipt-paper {
+  background: #fff;
+  color: #222;
+  padding: 30px 20px 40px 20px;
+  width: 100%;
+  max-width: 350px;
+  margin: 0 auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.vendor-name {
+  font-weight: 800;
+  color: #000;
+  margin-bottom: 5px;
+}
+.receipt-subtitle {
+  font-size: 12px;
+  opacity: 0.6;
+  text-transform: uppercase;
+}
+
+.divider {
+  border-bottom: 1px dashed #ddd;
+  margin: 15px 0;
+}
+
+.r-item-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+.label {
+  color: #777;
+}
+.val {
+  font-weight: 600;
+}
+
+.price-section {
+  text-align: center;
+  margin: 30px 0;
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+}
+.main-price {
+  font-size: 32px;
+  color: #1a1a1a;
+  margin-top: 5px;
+}
+
+.thanks-msg {
+  font-style: italic;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #444;
+  margin-top: 20px;
+  text-align: center;
+}
+
+.barcode-stub {
+  border-top: 1px solid #eee;
+  margin-top: 20px;
+  padding-top: 10px;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 12px;
+  text-align: center;
+  letter-spacing: 2px;
+}
+
+.receipt-bottom-edge {
+  position: absolute;
+  bottom: -15px;
+  left: 0;
+  width: 100%;
+  height: 15px;
+  background:
+    linear-gradient(-45deg, transparent 8px, #fff 0),
+    linear-gradient(45deg, transparent 8px, #fff 0);
+  background-repeat: repeat-x;
+  background-size: 15px 15px;
+}

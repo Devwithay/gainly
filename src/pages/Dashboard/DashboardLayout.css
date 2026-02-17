@@ -1,0 +1,14 @@
+.nav-item {
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 10px;
+  gap: 6px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.nav-item:hover {
+  opacity: 1;
+}

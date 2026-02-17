@@ -1,0 +1,86 @@
+/* .auth-layout {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 20;
+  background: var(--bg);
+}
+.modal-card {
+  max-width: 420;
+  width: 100%;
+}
+
+.auth-mini-layout {
+  text-align: center;
+  margin-bottom: 8;
+}
+#auth-h2 {
+  margin-top: 8;
+}
+#auth-p {
+  color: var(--muted);
+}
+.auth-fields {
+  width: 100%;
+  padding: 12;
+  border-radius: 10;
+  border: 1px solid var(--border);
+  background: transparent;
+
+  margin-bottom: 8;
+}
+.auth-input {
+  color: var(--text);
+}
+#password-toggle {
+  position: absolute;
+  right: 12;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  cursor: pointer;
+  padding: 6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.auth-layout2 {
+  display: flex;
+
+  gap: 8;
+}
+.mini {
+  align-items: center;
+  margin-top: 10;
+}
+#remember {
+  width: 16;
+  height: 16;
+}
+.cta-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#auth-status {
+  margin-top: 8;
+  color: var(--muted);
+  text-align: center;
+}
+#signIn-status {
+  padding: 8px 12px;
+  font-size: 14;
+}
+.auth-mini-layout2 {
+  margin-top: 14;
+  text-align: center;
+}
+#auth-error-msg {
+  color: #ff4d4f;
+  margin-bottom: 8;
+  font-size: 13;
+} */

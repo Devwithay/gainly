@@ -1,0 +1,32 @@
+.floating-nav {
+  position: fixed;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 60;
+}
+
+.floating-nav-inner {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  padding: 14px 22px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.18);
+}
+
+.nav-icon {
+  font-size: 18px;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.nav-add {
+  background: var(--accent-green);
+  color: #000;
+  padding: 10px 14px;
+  border-radius: 50%;
+  font-weight: 700;
+  text-decoration: none;
+}
