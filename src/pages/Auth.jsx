@@ -29,7 +29,6 @@ export default function Auth() {
 
   const navigate = useNavigate();
 
-  // --- REMEMBER ME LOGIC ---
   useEffect(() => {
     const savedNumber = localStorage.getItem("rememberedNumber");
     const savedPass = localStorage.getItem("rememberedPass");
@@ -51,18 +50,31 @@ export default function Auth() {
   };
 
   const categoriesList = [
-    "Fashion & Apparel", "Footwear & Bags", "Human Hairs & Wigs", 
-    "Beauty & Skincare", "Jewellery & Accessories", "Phones & Tech Gadgets",
-    "Health & Wellness Products", "Home & Kitchenware", "Baby & Kids Products",
-    "Snacks & Food Items", "Eco-Friendly Goods", "Pet Supplies & Accessories",
-    "Fitness & Gym Apparel", "Print-On-Demand Merchandise", "Wedding & Event Goods",
-    "Gaming & Esports Accessories", "DIY Crafts & Handmade Items", 
-    "Digital Products & Templates", "Service-Based Offers", "Beauty Tools & Grooming Devices"
+    "Fashion & Apparel",
+    "Footwear & Bags",
+    "Human Hairs & Wigs",
+    "Beauty & Skincare",
+    "Jewellery & Accessories",
+    "Phones & Tech Gadgets",
+    "Health & Wellness Products",
+    "Home & Kitchenware",
+    "Baby & Kids Products",
+    "Snacks & Food Items",
+    "Eco-Friendly Goods",
+    "Pet Supplies & Accessories",
+    "Fitness & Gym Apparel",
+    "Print-On-Demand Merchandise",
+    "Wedding & Event Goods",
+    "Gaming & Esports Accessories",
+    "DIY Crafts & Handmade Items",
+    "Digital Products & Templates",
+    "Service-Based Offers",
+    "Beauty Tools & Grooming Devices",
   ];
 
   const toggleNiche = (niche) => {
     if (selectedNiches.includes(niche)) {
-      setSelectedNiches(selectedNiches.filter(item => item !== niche));
+      setSelectedNiches(selectedNiches.filter((item) => item !== niche));
     } else {
       if (selectedNiches.length < 3) {
         setSelectedNiches([...selectedNiches, niche]);
@@ -74,7 +86,13 @@ export default function Auth() {
 
   const handleSignUp = async () => {
     setErrorMsg("");
-    if (!firstName || !number || !password || !businessName || selectedNiches.length === 0) {
+    if (
+      !firstName ||
+      !number ||
+      !password ||
+      !businessName ||
+      selectedNiches.length === 0
+    ) {
       setErrorMsg("Please fill in all fields and select a category.");
       return;
     }
@@ -85,7 +103,7 @@ export default function Auth() {
         businessName,
         JSON.stringify(selectedNiches),
         number,
-        password
+        password,
       );
 
       if (result === "Vendor Successfully added") {
@@ -125,9 +143,12 @@ export default function Auth() {
   };
 
   const handleForgotPassword = () => {
-    const contactCeo = window.confirm("Forgot Password? For security, password resets are handled manually by the Gainly Team. Contact support now?");
-    if(contactCeo) {
-        window.location.href = "https://wa.me/2347030318983?text=Hi%20Gainly%20Support,%20I%20forgot%20my%20password.";
+    const contactCeo = window.confirm(
+      "Forgot Password? For security, password resets are handled manually by the Gainly Team. Contact support now?",
+    );
+    if (contactCeo) {
+      window.location.href =
+        "https://wa.me/2347030318983?text=Hi%20Gainly%20Support,%20I%20forgot%20my%20password.";
     }
   };
 
@@ -140,21 +161,27 @@ export default function Auth() {
         <FontAwesomeIcon icon={theme === "light" ? faMoon : faSun} />
       </button>
 
-      <div className="auth-wrapper" style={{
+      <div
+        className="auth-wrapper"
+        style={{
           minHeight: "100vh",
           display: "grid",
           placeItems: "center",
           padding: 20,
           background: "var(--bg)",
-      }}>
-        <div className="modal-card glass" style={{ maxWidth: 420, width: "100%" }}>
+        }}>
+        <div
+          className="modal-card glass"
+          style={{ maxWidth: 420, width: "100%" }}>
           <div style={{ textAlign: "center", marginBottom: 8 }}>
             <div className="logo-glow">Gainly</div>
             <h2 style={{ marginTop: 8 }}>
               {isSignUp ? "Create account" : "Welcome Back, CEO"}
             </h2>
             <p style={{ color: "var(--muted)", fontSize: 14 }}>
-              {isSignUp ? "Join thousands of vendors managing sales." : "Sign in to manage your business."}
+              {isSignUp
+                ? "Join thousands of vendors managing sales."
+                : "Sign in to manage your business."}
             </p>
           </div>
 
@@ -175,7 +202,14 @@ export default function Auth() {
                 placeholder="Business name (e.g. Your Store)"
               />
               <div style={{ marginBottom: 12 }}>
-                <label style={{ fontSize: 12, color: "var(--muted)", display: "block", marginBottom: 8, fontWeight: 600 }}>
+                <label
+                  style={{
+                    fontSize: 12,
+                    color: "var(--muted)",
+                    display: "block",
+                    marginBottom: 8,
+                    fontWeight: 600,
+                  }}>
                   BUSINESS CATEGORY (MAX 3)
                 </label>
                 <div className="niche-selector-container">
@@ -184,8 +218,7 @@ export default function Auth() {
                       key={niche}
                       type="button"
                       onClick={() => toggleNiche(niche)}
-                      className={`niche-chip ${selectedNiches.includes(niche) ? "active" : ""}`}
-                    >
+                      className={`niche-chip ${selectedNiches.includes(niche) ? "active" : ""}`}>
                       {niche}
                     </button>
                   ))}
@@ -219,13 +252,14 @@ export default function Auth() {
             </button>
           </div>
 
-          <div style={{ 
-            display: "flex", 
-            justifyContent: "space-between", 
-            alignItems: "center",
-            marginTop: 5,
-            padding: "0 4px" 
-          }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginTop: 5,
+              padding: "0 4px",
+            }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <input
                 id="remember"
@@ -234,33 +268,48 @@ export default function Auth() {
                 onChange={(e) => setRememberMe(e.target.checked)}
                 style={{ width: 16, height: 16, cursor: "pointer" }}
               />
-              <label htmlFor="remember" style={{ cursor: "pointer", fontSize: 13, color: "var(--text)" }}>
+              <label
+                htmlFor="remember"
+                style={{
+                  cursor: "pointer",
+                  fontSize: 13,
+                  color: "var(--text)",
+                }}>
                 Remember me
               </label>
             </div>
-            
+
             {!isSignUp && (
-              <button 
+              <button
                 onClick={handleForgotPassword}
-                style={{ background: "none", border: "none", color: "#7c3aed", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
+                style={{
+                  background: "none",
+                  border: "none",
+                  color: "#7c3aed",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                }}>
                 Forgot Password?
               </button>
             )}
           </div>
 
           <div style={{ marginTop: 20 }}>
-            {errorMsg && (
-              <div className="error-banner">
-                {errorMsg}
-              </div>
-            )}
+            {errorMsg && <div className="error-banner">{errorMsg}</div>}
 
             <button
               className="cta-btn"
               onClick={isSignUp ? handleSignUp : handleLogin}
               style={{ width: "100%", height: 50, fontSize: 16 }}
               disabled={isLoading}>
-              {isLoading ? <FontAwesomeIcon icon={faSpinner} spin /> : (isSignUp ? "Create Account" : "Sign In")}
+              {isLoading ? (
+                <FontAwesomeIcon icon={faSpinner} spin />
+              ) : isSignUp ? (
+                "Create Account"
+              ) : (
+                "Sign In"
+              )}
             </button>
           </div>
 
@@ -271,7 +320,9 @@ export default function Auth() {
                 setIsSignUp((s) => !s);
                 setErrorMsg("");
               }}>
-              {isSignUp ? "Already have an account? Sign In" : "New to Gainly? Create Account"}
+              {isSignUp
+                ? "Already have an account? Sign In"
+                : "New to Gainly? Create Account"}
             </button>
           </div>
         </div>

@@ -645,7 +645,7 @@
 
 .support-text span {
   display: block;
-  color: white;
+  color: var(--text-muted);
   font-weight: 700;
   font-size: 14px;
 }

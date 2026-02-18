@@ -70,7 +70,7 @@ const SalesHub = () => {
   }, []);
   const navigate = useNavigate();
   const handleExport = () => {
-    window.location.href = `http://localhost/gainly-backend/export-csv.php?phone=${user.phone}`;
+    window.location.href = `https://api.gainly.com.ng/export-csv.php?phone=${user.phone}`;
   };
 
   return (
