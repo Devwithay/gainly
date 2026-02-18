@@ -6,7 +6,7 @@ import {
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link, Outlet } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
 
 function DashboardLayout() {
   return (
@@ -14,22 +14,22 @@ function DashboardLayout() {
       <Outlet />
 
       <nav className="bottom-nav">
-        <Link to="/dashboard" className="nav-item">
+        <NavLink to="/dashboard" className="nav-item">
           <FontAwesomeIcon icon={faHome} size="lg" />
           <span>Home</span>
-        </Link>
-        <Link to="/sales-hub" className="nav-item">
+        </NavLink>
+        <NavLink to="/sales-hub" className="nav-item">
           <FontAwesomeIcon icon={faChartLine} size="lg" />
           <span>Sales Hub</span>
-        </Link>
-        <Link to="/insights" className="nav-item">
+        </NavLink>
+        <NavLink to="/insights" className="nav-item">
           <FontAwesomeIcon icon={faChartSimple} size="lg" />
           <span>Insights</span>
-        </Link>
-        <Link to="/profile" className="nav-item">
+        </NavLink>
+        <NavLink to="/profile" className="nav-item">
           <FontAwesomeIcon icon={faUser} size="lg" />
           <span>Profile</span>
-        </Link>
+        </NavLink>
       </nav>
     </>
   );

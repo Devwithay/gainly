@@ -106,7 +106,7 @@ export default function Auth() {
         password,
       );
 
-      if (result === "Vendor Successfully added") {
+      if (result === "success") {
         handleRememberMe(number, password);
         const success = await login(number, password);
         if (success) window.location.href = "/dashboard";
