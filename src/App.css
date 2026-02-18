@@ -345,7 +345,7 @@ body {
 button.cta-btn {
   border: none;
   outline: none;
-  margin: 10px;
+  margin: 10pxd;
   cursor: pointer;
   font-family: inherit;
   background: var(--green);
