@@ -1,95 +1,51 @@
-import { useEffect, useState } from "react";
+import { useContext, useState, useEffect, lazy, Suspense } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faMoon,
+  faSun,
+  faCode,
+  faChartLine,
+  faUsers,
+  faBolt,
+} from "@fortawesome/free-solid-svg-icons";
 import "./App.css";
-import { createClient } from "@supabase/supabase-js";
+import AddSale from "./pages/Dashboard/Sales Hub/AddSale";
+import TrackSales from "./pages/Dashboard/Sales Hub/TrackSales";
+import Expenses from "./pages/Dashboard/Sales Hub/Expenses";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import Auth from "./pages/Auth";
 
-import FeatureRequest from "./FeatureRequest";
+import DashboardLayout from "./pages/Dashboard/DashboardLayout";
+import { ThemeContext } from "./Context Api/useTheme";
+import PageNotFound from "./pages/404";
+import Home from "./pages/Dashboard/Home";
 
-export const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
-console.log(
-  "Supabase env check:",
-  !!import.meta.env.VITE_SUPABASE_URL,
-  !!import.meta.env.VITE_SUPABASE_ANON_KEY
-);
+import Profile from "./pages/Dashboard/Profile";
+import { AuthProvider } from "./Context Api/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
+import ExpenseHistory from "./pages/Dashboard/Sales Hub/ExpenseHistory";
+import Receipts from "./pages/Dashboard/Sales Hub/Receipts";
+import DebtList from "./pages/Dashboard/Sales Hub/DebtList";
+import { AuthContext } from "./Context Api/AuthContext";
+import API_BASE_URL from "./apiConfig";
 
-export default function App() {
-  const [showModal, setShowModal] = useState(true);
-  const [showShine, setShowShine] = useState(true);
-  const [theme, setTheme] = useState(
-    () => localStorage.getItem("gainly-theme") || "light"
-  );
+const Insights = lazy(() => import("./pages/Dashboard/Insight"));
+const SalesHub = lazy(() => import("./pages/Dashboard/Sales Hub/SalesHub"));
 
-  const [particles, setParticles] = useState([]);
+function LandingPage({ showModal, setShowModal }) {
+  const { theme, setTheme } = useContext(ThemeContext);
+  const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowShine(false), 2000);
-    return () => clearTimeout(timer);
-  }, []);
-  useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
-    localStorage.setItem("gainly-theme", theme);
-  }, [theme]);
+    if (user) {
+      navigate("/dashboard");
+    }
+  }, [user, navigate]);
 
-  const COLORS = [
-    "#FF6B6B",
-    "#FFD166",
-    "#4ADE80",
-    "#60A5FA",
-    "#C084FC",
-    "#FF9F1C",
-  ];
-
-  const triggerParticles = () => {
-    const count = 28;
-    const now = Date.now();
-    const burst = Array.from({ length: count }).map((_, i) => {
-      const vx = Math.round(Math.random() * 520 - 260);
-
-      const vy = Math.round(-(160 + Math.random() * 360));
-      const size = Math.round(6 + Math.random() * 14);
-      const color = COLORS[Math.floor(Math.random() * COLORS.length)];
-      const rot = `${Math.round((Math.random() - 0.5) * 1080)}deg`;
-      const shape = Math.random() > 0.68 ? "circle" : "rect";
-      const duration = 900 + Math.round(Math.random() * 900);
-      const delay = Math.round(Math.random() * 120);
-      return {
-        id: `${now}-${i}`,
-        vx,
-        vy,
-        size,
-        color,
-        rot,
-        shape,
-        duration,
-        delay,
-      };
-    });
-
-    setParticles(burst);
-
-    const longest = Math.max(...burst.map((p) => p.duration + p.delay));
-    setTimeout(() => setParticles([]), longest + 500);
-  };
-  const handleJoinWaitlist = async () => {
+  const handleJoinWaitlist = () => {
     const whatsappUrl =
       "https://wa.me/2347030318983?text=Hi%20I%20want%20early%20access%20to%20Gainly.";
-
-    const insertPromise = supabase.from("waitlist_events").insert([
-      {
-        intent: "whatsapp_click",
-        source: "landing_page",
-      },
-    ]);
-
-    // Race the insert against a short timeout (150ms)
-    await Promise.race([
-      insertPromise,
-      new Promise((resolve) => setTimeout(resolve, 150)),
-    ]);
-
-    // Redirect immediately after
     window.open(whatsappUrl, "_blank");
   };
 
@@ -97,67 +53,30 @@ export default function App() {
     <>
       <button
         className="theme-toggle"
-        onClick={() => setTheme(theme === "light" ? "dark" : "light")}>
-        {theme === "light" ? "🌙" : "☀️"}
+        onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+        aria-label="Toggle theme">
+        <FontAwesomeIcon icon={theme === "light" ? faMoon : faSun} />
       </button>
 
-      {showShine && (
-        <div className="shine-burst">
-          {Array.from({ length: 14 }).map((_, i) => (
-            <span key={i} />
-          ))}
-        </div>
-      )}
-
       {showModal && (
-        <div className="modal-overlay" role="dialog" aria-modal="true">
-          <div className="modal-card glass" aria-labelledby="welcome-title">
-            <h2 id="welcome-title" className="modal-headline">
-              Turn your Student Business into a Brand 🚀
-            </h2>
-
+        <div className="modal-overlay">
+          <div className="modal-card glass">
+            <h2 className="modal-headline">Level Up Your Hustle 🚀</h2>
             <p className="modal-subhead">
-              Gainly helps you grow smart, track every Naira, and stay
-              consistent. Join the league of elite Unilorin vendors.
+              Stop running your business on "vibes." Join 100+ Unilorin vendors
+              using Gainly to track profits and scale professionally.
             </p>
-
             <div className="modal-actions">
-              {/* Enter (reveal the site) */}
               <button
                 className="cta-btn modal-enter"
-                onClick={() => {
-                  // spark particles and reveal
-                  triggerParticles?.();
-                  setTimeout(() => setShowModal(false), 450);
-                }}>
-                Enter Gainly
+                onClick={() => setShowModal(false)}>
+                Explore Features
               </button>
-
-              {/* Join Waitlist (keeps instant feeling via handleJoinWaitlist) */}
-              <button className="cta-btn outline" onClick={handleJoinWaitlist}>
-                Join Waitlist
+              <button
+                onClick={() => navigate("/auth")}
+                className="cta-btn shine">
+                Log In Now
               </button>
-            </div>
-
-            <div className="lead-badge" aria-hidden="true">
-              🎁 Plus: Get our <strong>'Vendor Growth Blueprint'</strong> free
-              when you join the waitlist.
-            </div>
-
-            {/* Particles layer stays here (if you had it) */}
-            <div className="particle-layer" aria-hidden="true">
-              {particles?.map((p) => (
-                <span
-                  key={p.id}
-                  className="particle"
-                  style={{
-                    width: p.size,
-                    height: p.size,
-                    "--x": `${p.x}px`,
-                    "--y": `${p.y}px`,
-                  }}
-                />
-              ))}
             </div>
           </div>
         </div>
@@ -165,110 +84,190 @@ export default function App() {
 
       <div className="blob blob-1"></div>
       <div className="blob blob-2"></div>
-      <div className="blob blob-3"></div>
 
       <main className={`app ${showModal ? "blurred" : ""}`}>
-        <section className="hero" aria-labelledby="hero-title">
-          <div className="logo-glow">Gainly</div>
-
-          <h1 id="hero-title" className="hero-title">
-            Turn your Student Business into a Brand 🚀
-            <br />
-            <span className="hero-subtitle">
-              Gainly helps you grow smart, track every Naira, and stay
-              consistent. Join the league of elite Unilorin vendors.
-            </span>
-          </h1>
-
-          <p className="hero-niche">
-            Tailored for Bakers, Fashion Designers, Data Vendors, and every
-            student hustler.
-          </p>
-
-          <p className="hero-desc">
-            Gainly you track sales, stay visible to customers, and make smarter
-            decisions — without complexity.
-          </p>
-
+        <nav className="landing-nav">
+          <div className="logo-glow">
+            <FontAwesomeIcon icon={faCode} style={{ marginRight: 8 }} />
+            Gainly
+          </div>
           <button
-            onClick={handleJoinWaitlist}
-            className="cta-btn shine hero-cta">
-            Join WhatsApp Waitlist
+            onClick={() => navigate("/auth")}
+            className="nav-login cta-btn">
+            Login
           </button>
-        </section>
+        </nav>
 
-        <section className="section glass">
-          <h2>Growing a student business comes with real challenges</h2>
-          <ul>
-            <li>Marketing can sometimes be inconsistent during busy weeks</li>
-            <li>Sales happen daily, but totals aren’t always clear</li>
-            <li>
-              Some products sell faster than others — without obvious patterns
-            </li>
-            <li>Growth feels unpredictable, even with hard work</li>
-          </ul>
-          <p>
-            That's is where{" "}
-            <span style={{ color: "green", fontWeight: "bolder" }}>Gainly</span>{" "}
-            comes in.
-          </p>
+        <section className="hero">
+          <div className="hero-content">
+            <span className="badge">
+              Built for Unilorin Student Vendors, Open to All
+            </span>
+            <h1 className="hero-title">
+              The Operating System for <br />
+              <span className="gradient-text">Student CEOs.</span>
+            </h1>
+            <p className="hero-desc">
+              Gainly turns your daily hustle into a structured brand. Track
+              sales, manage expenses, and get insights that help you grow—all in
+              one place.
+            </p>
+            <div className="hero-btns">
+              <button
+                onClick={() => navigate("/auth")}
+                className="cta-btn shine">
+                Start Tracking for Free
+              </button>
+              <button
+                onClick={handleJoinWaitlist}
+                className="cta-btn secondary">
+                Join Community
+              </button>
+            </div>
+          </div>
         </section>
 
         <section className="section">
-          <h2>One platform. Three growth systems.</h2>
+          <div className="stats-strip glass">
+            <div className="stat-item">
+              <h3>100%</h3>
+              <p>Mobile Friendly</p>
+            </div>
+            <div className="stat-item">
+              <h3>₦0</h3>
+              <p>Initial Cost</p>
+            </div>
+            <div className="stat-item">
+              <h3>24/7</h3>
+              <p>CEO Support</p>
+            </div>
+          </div>
+        </section>
 
+        <section className="section">
+          <h2 className="section-title">Everything you need to scale</h2>
           <div className="card-grid">
             <div className="card glass">
-              <h3>Strategic Visibility</h3>
+              <FontAwesomeIcon
+                icon={faChartLine}
+                className="card-icon purple"
+              />
+              <h3>Sales Tracking</h3>
               <p>
-                Stay top-of-mind with customers through smart reminders on when
-                and what to promote — based on your activity.
+                Know exactly how much you're making. No more "where did my money
+                go?" moments.
               </p>
             </div>
-
             <div className="card glass">
-              <h3>Sales Clarity</h3>
+              <FontAwesomeIcon icon={faUsers} className="card-icon blue" />
+              <h3>Customer Trust</h3>
               <p>
-                Record sales in seconds and see clear totals by day, product,
-                and period — without spreadsheets.
+                Get a verified badge and professional receipts that make
+                customers take you seriously.
               </p>
             </div>
-
             <div className="card glass">
-              <h3>Actionable Insights</h3>
+              <FontAwesomeIcon icon={faBolt} className="card-icon orange" />
+              <h3>Smart Insights</h3>
               <p>
-                Go beyond vibes. Understand what’s working, what needs
-                attention, and where your profit truly comes from.
+                Understand your best-selling days and products so you can
+                restock smarter.
               </p>
             </div>
           </div>
         </section>
 
-        <section className="section proof">
-          <p>
-            Built with <strong>Unilorin student vendors</strong> in mind.
-            <br />
-            Focused on real daily business problems.
-          </p>
-        </section>
-
         <section className="section cta-section glass">
-          <h2>Get early access</h2>
-          <p>
-            We’re onboarding a small group of Unilorin student vendors to shape
-            the first version of Gainly.
-          </p>
-
-          <button onClick={handleJoinWaitlist} className="cta-btn shine">
-            Join our WhatsApp Waitlist
+          <h2>Ready to turn your hustle into a legacy?</h2>
+          <p>Join the next generation of student entrepreneurs at Unilorin.</p>
+          <button onClick={() => navigate("/auth")} className="cta-btn shine">
+            Create Your Account
           </button>
         </section>
-        <FeatureRequest />
+
         <footer className="footer">
-          © {new Date().getFullYear()} Gainly — Built for Unilorin student
-          vendors
+          © {new Date().getFullYear()} Gainly — The Student CEO's Choice
         </footer>
       </main>
     </>
+  );
+}
+
+export default function App() {
+  const [showModal, setShowModal] = useState(
+    () => !localStorage.getItem("gainly-entered"),
+  );
+  const trackAction = (actionType) => {
+    const currentHistory = JSON.parse(
+      localStorage.getItem("gainly_history") || "[]",
+    );
+    currentHistory.push({ action: actionType, time: Date.now() });
+    localStorage.setItem(
+      "gainly_history",
+      JSON.stringify(currentHistory.slice(-10)),
+    );
+  };
+
+  const [user, setUser] = useState(null);
+
+  return (
+    <AuthProvider>
+      <Suspense
+        fallback={<div className="loading-screen">Loading Gainly...</div>}>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <LandingPage showModal={showModal} setShowModal={setShowModal} />
+            }
+          />
+
+          <Route
+            path="/auth"
+            element={<Auth onLoginSuccess={(userData) => setUser(userData)} />}
+          />
+
+          <Route
+            element={
+              <ProtectedRoute>
+                <DashboardLayout />
+              </ProtectedRoute>
+            }>
+            <Route
+              path="dashboard"
+              element={<Home trackAction={trackAction} />}
+            />
+            <Route
+              path="sales-hub"
+              element={<SalesHub trackAction={trackAction} />}
+            />
+            <Route
+              path="sales-hub/add-sale"
+              element={<AddSale trackAction={trackAction} />}
+            />
+            <Route
+              path="sales-hub/track-sales"
+              element={<TrackSales trackAction={trackAction} />}
+            />
+            <Route path="sales-hub/expenses" element={<Expenses />} />
+            <Route
+              path="sales-hub/expense-history"
+              element={<ExpenseHistory trackAction={trackAction} />}
+            />
+            <Route path="sales-hub/receipts" element={<Receipts />} />
+            <Route
+              path="sales-hub/debt-list"
+              element={<DebtList trackAction={trackAction} />}
+            />
+            <Route path="insights" element={<Insights />} />
+            <Route path="profile" element={<Profile />} />
+          </Route>
+
+          <Route path="/" element={<Navigate to="/home" />} />
+
+          <Route path="*" element={<PageNotFound />} />
+        </Routes>
+      </Suspense>
+    </AuthProvider>
   );
 }
