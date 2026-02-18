@@ -338,11 +338,14 @@ body {
 .card,
 .cta-btn,
 .modal-card {
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
 }
 button.cta-btn {
   border: none;
   outline: none;
+  margin: 10px;
   cursor: pointer;
   font-family: inherit;
   background: var(--green);
