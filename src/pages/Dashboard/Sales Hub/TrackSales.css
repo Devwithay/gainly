@@ -130,11 +130,11 @@
   overflow-x: auto;
   padding: 10px 5px;
   margin-bottom: 15px;
-  scrollbar-width: none; /* Hide scrollbar Firefox */
+  scrollbar-width: none;
 }
 .niche-filter-bar::-webkit-scrollbar {
   display: none;
-} /* Hide scrollbar Chrome */
+}
 
 .filter-pill {
   white-space: nowrap;

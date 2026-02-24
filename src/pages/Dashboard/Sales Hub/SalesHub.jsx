@@ -32,7 +32,7 @@ const ActionSkeleton = () => (
 
 const SalesHub = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const { user } = useContext(AuthContext);
+  const { user, onboardingStep, completeStep } = useContext(AuthContext);
 
   const [hubStats, setHubStats] = useState({
     totalSales: 0,
@@ -121,8 +121,11 @@ const SalesHub = () => {
       </section>
 
       <button
+        id="btn-add-sale"
         className="primary-add-btn"
-        onClick={() => navigate("/sales-hub/add-sale")}>
+        onClick={() => {
+          navigate("/sales-hub/add-sale");
+        }}>
         <div className="btn-content">
           <div className="icon-circle">
             <FontAwesomeIcon icon={faPlus} />
@@ -153,14 +156,19 @@ const SalesHub = () => {
               <span>Track Sales</span>
             </div>
             <div
+              id="btn-expenses"
               className="action-card glass-card"
               onClick={() => navigate("/sales-hub/expense-history")}>
               <FontAwesomeIcon icon={faWallet} className="action-icon green" />
               <span>Expenses</span>
             </div>
             <div
+              id="btn-receipts"
               className="action-card glass-card"
-              onClick={() => navigate("/sales-hub/receipts")}>
+              onClick={() => {
+                if (onboardingStep === 4) completeStep(4);
+                navigate("/sales-hub/receipts");
+              }}>
               <FontAwesomeIcon icon={faReceipt} className="action-icon blue" />
               <span>Receipts</span>
             </div>

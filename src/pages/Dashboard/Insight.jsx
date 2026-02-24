@@ -26,7 +26,6 @@ const Insights = () => {
           fetch(`${API_BASE_URL}/fetch-retention.php?phone=${user.phone}`),
         ]);
 
-        // Check if either request failed before trying to parse JSON
         if (!resStats.ok) throw new Error("Stats API failed");
         if (!resRetention.ok) throw new Error("Retention API failed");
 
@@ -39,7 +38,7 @@ const Insights = () => {
         });
       } catch (err) {
         console.error("Insight Fetch Error:", err);
-        // Fallback data so the app doesn't stay on "Analyzing..." forever
+
         setData({
           revenue: 0,
           netProfit: 0,
@@ -65,14 +64,12 @@ const Insights = () => {
     );
   }
 
-  // --- 1. DEFENSIVE CALCULATIONS FIRST ---
   const revenue = Number(data?.revenue || 0);
-  const netProfit = Number(data?.netProfit || 0); // Define this first!
+  const netProfit = Number(data?.netProfit || 0);
   const expenses = Number(data?.expenses || 0);
   const currentTarget = Number(user?.salesGoal || data?.target || 500000);
   const goalProgress = (revenue / currentTarget) * 100;
 
-  // --- 2. NOW DEFINE THE STATUS LOGIC ---
   const getStatus = (profit) => {
     if (profit > 100000) return { label: "Market Leader", color: "#8b5cf6" };
     if (profit > 0) return { label: "Profitable", color: "#22c55e" };
@@ -151,7 +148,6 @@ const Insights = () => {
         <h3 className="section-title">Niche Profitability Index</h3>
         <div className="niche-grid">
           {nicheList.map((niche, idx) => {
-            // SYNCED: Using 'efficiency' from PHP
             const efficiency = Math.round(niche.efficiency || 0);
             return (
               <div key={idx} className="glass-card niche-stat-card">

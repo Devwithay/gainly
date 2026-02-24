@@ -456,7 +456,7 @@
 }
 
 .strategy-card-golden {
-  border: 1px solid rgba(255, 215, 0, 0.3) !important; /* Gold tint */
+  border: 1px solid rgba(255, 215, 0, 0.3) !important;
   background: linear-gradient(
     135deg,
     rgba(255, 255, 255, 0.1),
@@ -478,7 +478,7 @@
 }
 
 .strategy-subtitle {
-  color: #7c3aed; /* Purple brand color */
+  color: #7c3aed;
   font-size: 13px;
   font-weight: 700;
   margin-top: -8px;
@@ -506,7 +506,6 @@
   color: #ffd700;
   margin-right: 8px;
 }
-/* --- ADDITIONAL AI UI STYLES --- */
 
 .ai-input-form {
   display: flex;
@@ -579,7 +578,6 @@
   background: var(--glass-bg);
 }
 
-/* snippet area */
 .save-snippet-btn {
   background: #10b981;
   color: white;
@@ -617,7 +615,6 @@
   cursor: pointer;
 }
 
-/* make sure suggestion buttons stay visible and styled */
 .ai-suggestions button {
   text-align: left;
   padding: 12px;
@@ -630,7 +627,6 @@
   transition: all 0.12s ease;
 }
 
-/* minor layout */
 .ai-controls {
   margin-bottom: 12px;
 }

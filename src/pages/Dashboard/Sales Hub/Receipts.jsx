@@ -11,7 +11,7 @@ import {
 import "./Receipts.css";
 import API_BASE_URL from "../../../apiConfig";
 const Receipts = () => {
-  const { user } = useContext(AuthContext);
+  const { user, onboardingStep, completeStep } = useContext(AuthContext);
   const navigate = useNavigate();
   const [sales, setSales] = useState([]);
   const [selectedSale, setSelectedSale] = useState(null);
@@ -38,6 +38,7 @@ const Receipts = () => {
       `_Track your sales and grow your business with Gainly._%0A` +
       `👉 *Create your own receipts here:* https://gainly.com.ng`;
     window.open(`https://wa.me/?text=${message}`, "_blank");
+    if (onboardingStep === 6) completeStep(6);
   };
 
   return (
@@ -105,9 +106,11 @@ const Receipts = () => {
 
           <div className="receipt-actions">
             <button
+              id="btn-whatsapp-share"
               className="cta-btn share-btn"
               onClick={() => handleWhatsAppShare(selectedSale)}>
-              <FontAwesomeIcon icon={faShareNodes} /> Send to Customer
+              <FontAwesomeIcon icon={faShareNodes} /> Send to Customer on
+              Whatsapp
             </button>
             <button
               className="back-to-list"
@@ -117,14 +120,14 @@ const Receipts = () => {
           </div>
         </div>
       ) : (
-        /* THE LIST */
         <div className="history-list">
           <p style={{ color: "var(--muted)", fontSize: "14px" }}>
             Select a sale to generate a receipt
           </p>
-          {sales.map((sale) => (
+          {sales.map((sale, index) => (
             <div
               key={sale.id}
+              id={index === 0 ? "first-sale-item" : ""}
               className="glass-card sale-item"
               onClick={() => setSelectedSale(sale)}>
               <div className="sale-info">

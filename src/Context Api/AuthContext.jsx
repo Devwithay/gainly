@@ -5,42 +5,76 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [hasExpenses, setHasExpenses] = useState(null);
+  const [onboardingStep, setOnboardingStep] = useState(() => {
+    return parseInt(localStorage.getItem("gainly_onboarding_step")) || 0;
+  });
 
- const fetchUserProfile = useCallback(async (phone) => {
-  try {
-    const response = await fetch(
-      `${API_BASE_URL}/fetch-profile.php?phone=${phone}`,
-    );
-    const data = await response.json();
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
 
-    if (!data.error) {
-      
-      let userNiches = [];
-      try {
-        userNiches = data.categories ? JSON.parse(data.categories) : (data.category ? [data.category] : []);
-      } catch (e) {
-        userNiches = [data.category || "General"]; 
+  useEffect(() => {
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    });
+  }, []);
+
+  const completeStep = (stepNumber, jumpTo = null) => {
+    const nextStep = jumpTo !== null ? jumpTo : stepNumber + 1;
+    setOnboardingStep(nextStep);
+    localStorage.setItem("gainly_onboarding_step", nextStep);
+  };
+
+  const triggerAndroidInstall = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === "accepted") {
+        completeStep(1);
+        setDeferredPrompt(null);
       }
-
-      const userData = {
-        phone: phone,
-        fullname: data.fullname,
-        firstName: data.fullname ? data.fullname.split(" ")[0] : "CEO",
-        bname: data.bname,
-    
-        categories: userNiches, 
-        is_verified: parseInt(data.is_verified) || 0,
-        salesGoal: parseFloat(data.salesGoal) || 500000,
-        profilePic: data.profilePic,
-      };
-      setUser(userData);
-      return userData;
+    } else {
+      completeStep(1);
     }
-  } catch (err) {
-    console.error("Failed to fetch profile", err);
-  }
-  return null;
-}, []);
+  };
+  const fetchUserProfile = useCallback(async (phone) => {
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/fetch-profile.php?phone=${phone}`,
+      );
+      const data = await response.json();
+
+      if (!data.error) {
+        let userNiches = [];
+        try {
+          userNiches = data.categories
+            ? JSON.parse(data.categories)
+            : data.category
+              ? [data.category]
+              : [];
+        } catch (e) {
+          userNiches = [data.category || "General"];
+        }
+
+        const userData = {
+          phone: phone,
+          fullname: data.fullname,
+          firstName: data.fullname ? data.fullname.split(" ")[0] : "CEO",
+          bname: data.bname,
+
+          categories: userNiches,
+          is_verified: parseInt(data.is_verified) || 0,
+          salesGoal: parseFloat(data.salesGoal) || 500000,
+          profilePic: data.profilePic,
+        };
+        setUser(userData);
+        return userData;
+      }
+    } catch (err) {
+      console.error("Failed to fetch profile", err);
+    }
+    return null;
+  }, []);
 
   const updateUser = (newData) => {
     setUser((prev) => ({ ...prev, ...newData }));
@@ -61,8 +95,8 @@ export const AuthProvider = ({ children }) => {
     const formData = new FormData();
     formData.append("fname", fname);
     formData.append("bname", bname);
-   
-    formData.append("categories", category); 
+
+    formData.append("categories", category);
     formData.append("phone", phone);
     formData.append("pass", pass);
 
@@ -75,7 +109,7 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       return "connection_error";
     }
-};
+  };
 
   const login = async (phone, password) => {
     const formData = new FormData();
@@ -107,10 +141,22 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("userSession");
     setUser(null);
   };
-
   return (
     <AuthContext.Provider
-      value={{ user, login, register, logout, loading, updateUser }}>
+      value={{
+        user,
+        login,
+        register,
+        logout,
+        loading,
+        updateUser,
+        onboardingStep,
+        completeStep,
+        triggerAndroidInstall,
+        hasExpenses,
+        setHasExpenses,
+        deferredPrompt,
+      }}>
       {children}
     </AuthContext.Provider>
   );

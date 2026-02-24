@@ -1,21 +1,21 @@
 .floating-nav {
   position: fixed;
-  bottom: 25px; /* Slightly higher for modern mobile bars */
+  bottom: 25px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 9999; /* Ensure it stays on top */
-  width: max-content; /* Prevent shrinking */
+  z-index: 9999;
+  width: max-content;
 }
 
 .floating-nav-inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 30px; /* More breathing room */
+  gap: 30px;
   padding: 12px 28px;
   border-radius: 40px;
-  background: rgba(15, 15, 15, 0.8); /* Darker glass for better contrast */
-  backdrop-filter: blur(12px); /* Blur effect */
+  background: rgba(15, 15, 15, 0.8);
+  backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
@@ -27,7 +27,6 @@
   transition: all 0.3s ease;
 }
 
-/* Style for the active page */
 .nav-icon.active {
   color: var(--accent-green, #00ff88);
 }

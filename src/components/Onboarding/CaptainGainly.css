@@ -1,0 +1,123 @@
+:root {
+  --hole-x: 50%;
+  --hole-y: 50%;
+  --hole-r: 35px;
+}
+
+.mask-active {
+  -webkit-mask-image: radial-gradient(
+    ellipse var(--hole-r) 66px at var(--hole-x) var(--hole-y),
+    transparent 100%,
+    black 100%
+  );
+  mask-image: radial-gradient(
+    ellipse var(--hole-r) 50px at var(--hole-x) var(--hole-y),
+    transparent 100%,
+    black 100%
+  );
+}
+
+.onboarding-root {
+  position: fixed;
+  inset: 0;
+  z-index: 10001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  transition: all 0.4s ease;
+}
+
+.onboarding-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  pointer-events: auto;
+  z-index: -1;
+}
+
+.spotlight-clickable {
+  position: absolute;
+  z-index: 10002;
+  pointer-events: auto;
+  cursor: pointer;
+  border: 3px solid #7c3aed;
+  box-shadow: 0 0 15px rgba(124, 58, 237, 0.6);
+  transition: all 0.3s ease;
+}
+
+.captain-card {
+  position: relative;
+  pointer-events: auto;
+  background: white;
+  width: 92%;
+  max-width: 360px;
+  padding: 25px;
+  border-radius: 24px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  color: #121212;
+
+  transition:
+    transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    top 0.4s ease,
+    bottom 0.4s ease;
+}
+
+.card-at-bottom {
+  align-self: flex-end;
+  margin-bottom: 40px;
+  transform: translateY(0) !important;
+}
+
+.card-elevated {
+  transform: translateY(-120px);
+}
+
+.onboarding-arrow {
+  position: absolute;
+  top: -55px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #fff;
+  filter: drop-shadow(0 0 8px #7c3aed);
+  font-size: 32px;
+  animation: bounceArrow 0.6s infinite alternate;
+}
+
+@keyframes bounceArrow {
+  from {
+    transform: translateX(-50%) translateY(0);
+  }
+  to {
+    transform: translateX(-50%) translateY(-10px);
+  }
+}
+
+.ai-icon-wrapper {
+  font-size: 40px;
+  color: #7c3aed;
+  margin-bottom: 10px;
+}
+
+.onboarding-btn {
+  background: #7c3aed;
+  color: white;
+  border: none;
+  padding: 15px;
+  border-radius: 12px;
+  width: 100%;
+  font-weight: bold;
+  margin-top: 15px;
+  cursor: pointer;
+}
+
+.skip-link {
+  background: none;
+  border: none;
+  color: #7c3aed;
+  text-decoration: underline;
+  margin-top: 15px;
+  cursor: pointer;
+}

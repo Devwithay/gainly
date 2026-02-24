@@ -1,5 +1,6 @@
 import { useContext, useState, useEffect, lazy, Suspense } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import CaptainGainly from "./components/Onboarding/CaptainGainly";
 import {
   faMoon,
   faSun,
@@ -212,6 +213,7 @@ export default function App() {
 
   return (
     <AuthProvider>
+      <CaptainGainly />
       <Suspense
         fallback={<div className="loading-screen">Loading Gainly...</div>}>
         <Routes>

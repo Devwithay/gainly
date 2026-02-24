@@ -357,7 +357,7 @@
 .currency-preview {
   display: block;
   font-size: 0.85rem;
-  color: #a855f7; /* Purple */
+  color: #a855f7;
   font-weight: 600;
   margin-top: 4px;
 }
@@ -469,7 +469,7 @@
 .image-viewer-overlay {
   position: fixed;
   inset: 0;
-  background: #000; /* Pure black for focus */
+  background: #000;
   z-index: 3000;
   display: flex;
   align-items: center;
@@ -554,11 +554,10 @@
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  object-fit: cover; /* Forces uniform square crop into circle */
+  object-fit: cover;
   background: #222;
 }
 
-/* TOAST NOTIFICATION */
 .toast-box {
   position: fixed;
   top: 20px;

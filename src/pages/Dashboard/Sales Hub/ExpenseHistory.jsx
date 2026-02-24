@@ -40,7 +40,6 @@ const ExpenseHistory = ({ trackAction }) => {
   return (
     <div className="expenses-container">
       {" "}
-      {/* Changed class to use the fixed container */}
       <div className="blob blob-orange"></div>
       <header className="page-header">
         <button className="back-btn" onClick={() => navigate(-1)}>
@@ -53,6 +52,7 @@ const ExpenseHistory = ({ trackAction }) => {
           Your spending logs
         </p>
         <button
+          id="btn-add-expense"
           className="add-exp-inline-btn"
           onClick={() => navigate("/sales-hub/expenses")}>
           <FontAwesomeIcon icon={faPlus} />

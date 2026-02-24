@@ -80,7 +80,7 @@
 }
 .ios-pointer-container {
   position: fixed;
-  bottom: 80px; /* Sits above the browser bottom bar */
+  bottom: 80px;
   left: 50%;
   transform: translateX(-50%);
   text-align: center;

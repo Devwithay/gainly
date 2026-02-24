@@ -46,7 +46,6 @@ const TrackSales = ({ trackAction }) => {
     setFilteredSales(filtered);
   }, [activeFilter, sales]);
 
-  // Calculate Profit for the current view
   const totalProfit = filteredSales.reduce((acc, sale) => {
     const profit = parseFloat(sale.amount) - parseFloat(sale.cost_price || 0);
     return acc + profit;
@@ -66,7 +65,6 @@ const TrackSales = ({ trackAction }) => {
         <h1>Performance</h1>
       </header>
 
-      {/* Summary Insights Card */}
       <div className="glass-card summary-card">
         <div className="summary-item">
           <span className="label">Revenue ({activeFilter})</span>
@@ -79,7 +77,6 @@ const TrackSales = ({ trackAction }) => {
         </div>
       </div>
 
-      {/* Mobile-Friendly Niche Selector */}
       <div className="filter-section">
         <label>
           <FontAwesomeIcon icon={faFilter} /> Filter Niche

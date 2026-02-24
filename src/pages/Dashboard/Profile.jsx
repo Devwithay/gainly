@@ -194,7 +194,6 @@ const Profile = () => {
         <h1>Account</h1>
       </header>
 
-      {/* Profile Card */}
       <section
         className="glass-card profile-card"
         onClick={() => setBottomSheet(true)}>
@@ -231,7 +230,6 @@ const Profile = () => {
         </div>
       </section>
 
-      {/* Settings List */}
       <div className="settings-group">
         <h3 className="group-title">Business Details</h3>
         <div className="glass-card settings-list">

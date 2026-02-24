@@ -11,7 +11,7 @@ import API_BASE_URL from "../../../apiConfig";
 import "./Expenses.css";
 
 const Expenses = () => {
-  const { user } = useContext(AuthContext);
+  const { user, onboardingStep, completeStep } = useContext(AuthContext);
   const navigate = useNavigate();
   const [item, setItem] = useState("");
   const [amount, setAmount] = useState("");
@@ -40,6 +40,7 @@ const Expenses = () => {
         body: formData,
       });
       if ((await res.text()) === "success") {
+        if (onboardingStep === 9) completeStep(9);
         alert("Expense logged!");
         navigate("/sales-hub");
       }
