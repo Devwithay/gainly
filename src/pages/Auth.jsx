@@ -56,6 +56,7 @@ export default function Auth() {
     "Beauty & Skincare",
     "Jewellery & Accessories",
     "Phones & Tech Gadgets",
+    "Stationeries",
     "Health & Wellness Products",
     "Home & Kitchenware",
     "Baby & Kids Products",
@@ -69,6 +70,8 @@ export default function Auth() {
     "DIY Crafts & Handmade Items",
     "Digital Products & Templates",
     "Service-Based Offers",
+    "Graphics designer",
+    "Video Editor",
     "Beauty Tools & Grooming Devices",
   ];
 
