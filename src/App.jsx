@@ -198,6 +198,17 @@ export default function App() {
   const [showModal, setShowModal] = useState(
     () => !localStorage.getItem("gainly-entered"),
   );
+
+  return (
+    <AuthProvider>
+      <AppContent showModal={showModal} setShowModal={setShowModal} />
+    </AuthProvider>
+  );
+}
+
+function AppContent({ showModal, setShowModal }) {
+  const { loading, user, onboardingStep } = useContext(AuthContext);
+
   const trackAction = (actionType) => {
     const currentHistory = JSON.parse(
       localStorage.getItem("gainly_history") || "[]",
@@ -209,13 +220,15 @@ export default function App() {
     );
   };
 
-  const [user, setUser] = useState(null);
+  if (loading) {
+    return <div className="loading-screen">Loading Gainly...</div>;
+  }
 
   return (
-    <AuthProvider>
-      <CaptainGainly />
-      <Suspense
-        fallback={<div className="loading-screen">Loading Gainly...</div>}>
+    <>
+      {user && onboardingStep < 13 && <CaptainGainly />}
+
+      <Suspense fallback={<div className="loading-screen">Loading...</div>}>
         <Routes>
           <Route
             path="/"
@@ -223,12 +236,9 @@ export default function App() {
               <LandingPage showModal={showModal} setShowModal={setShowModal} />
             }
           />
-
-          <Route
-            path="/auth"
-            element={<Auth onLoginSuccess={(userData) => setUser(userData)} />}
-          />
+          <Route path="/auth" element={<Auth />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
+
           <Route
             element={
               <ProtectedRoute>
@@ -265,11 +275,9 @@ export default function App() {
             <Route path="profile" element={<Profile />} />
           </Route>
 
-          <Route path="/" element={<Navigate to="/home" />} />
-
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Suspense>
-    </AuthProvider>
+    </>
   );
 }

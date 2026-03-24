@@ -12,6 +12,11 @@ import "./CaptainGainly.css";
 
 const CaptainGainly = () => {
   const auth = useContext(AuthContext);
+  useEffect(() => {
+    if (auth.onboardingStep === 1 && auth.isRunningInPWA()) {
+      auth.completeStep(1);
+    }
+  }, [auth.onboardingStep, auth.isRunningInPWA]);
   const navigate = useNavigate();
   const [coords, setCoords] = useState(null);
   const [platform, setPlatform] = useState(null);
@@ -142,9 +147,13 @@ const CaptainGainly = () => {
   if (!auth?.user || auth.onboardingStep >= steps.length) return null;
 
   const isTargetAtTop = coords && coords.top < window.innerHeight * 0.4;
+  if (auth.loading || !auth.user) return null;
 
+  const isTutorialActive =
+    auth.onboardingStep >= 0 && auth.onboardingStep < steps.length;
   const shouldShow =
     !isPaused &&
+    isTutorialActive &&
     (auth.onboardingStep < 2 ||
       coords !== null ||
       [7, 10, 12].includes(auth.onboardingStep));
