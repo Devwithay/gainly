@@ -11,6 +11,7 @@ import {
   faWallet,
 } from "@fortawesome/free-solid-svg-icons";
 import API_BASE_URL from "../../../apiConfig";
+import "../../../App.css";
 import "./AddSale.css";
 
 const AddSale = ({ trackAction }) => {

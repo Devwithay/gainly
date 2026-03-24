@@ -10,6 +10,7 @@ import {
   faMoneyBillWave,
 } from "@fortawesome/free-solid-svg-icons";
 import API_BASE_URL from "../../../apiConfig";
+import "../../../App.css";
 import "./TrackSales.css";
 
 const TrackSales = ({ trackAction }) => {

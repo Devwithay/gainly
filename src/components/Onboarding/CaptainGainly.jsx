@@ -77,7 +77,7 @@ const CaptainGainly = () => {
       },
       {
         title: "Your Profile",
-        text: "Final stop! Customize your business details here.",
+        text: "Final stop! Customize your business details here, set monthly goals.",
         target: "nav-profile",
       },
       {

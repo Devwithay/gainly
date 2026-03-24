@@ -7,7 +7,9 @@ import {
   faReceipt,
   faShareNodes,
 } from "@fortawesome/free-solid-svg-icons";
+import "../../../App.css";
 import "./Receipts.css";
+
 import API_BASE_URL from "../../../apiConfig";
 
 const Receipts = () => {

@@ -3,23 +3,30 @@
 }
 
 :root {
-  --green: #22c55e;
+  --green: #0b6d2f;
+  --purple: #7c4dff;
+  --orange: #f97316;
+  --red: #ef4444;
 
   --bg: #f9fafb;
   --text: #0b1220;
   --muted: #6b7280;
-
   --glass: rgba(255, 255, 255, 0.7);
+  --card-bg: #ffffff;
+  --input-bg: rgba(0, 0, 0, 0.03);
   --border: rgba(0, 0, 0, 0.08);
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
 }
 
 [data-theme="dark"] {
   --bg: #000000;
   --text: #ffffff;
   --muted: #9ca3af;
-
   --glass: rgba(255, 255, 255, 0.08);
+  --card-bg: #111111;
+  --input-bg: rgba(255, 255, 255, 0.05);
   --border: rgba(255, 255, 255, 0.15);
+  --shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
 }
 
 body {
@@ -28,6 +35,68 @@ body {
   background: var(--bg);
   color: var(--text);
   overflow-x: hidden;
+  transition:
+    background 0.3s ease,
+    color 0.3s ease;
+}
+
+.glass {
+  background: var(--glass);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+}
+
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 22px;
+  color: var(--text);
+}
+
+.gainly-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  padding: 20px;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.gainly-form {
+  width: 100%;
+  background: var(--glass);
+  border: 1px solid var(--border);
+  padding: 30px;
+  border-radius: 24px;
+}
+
+.input-group input,
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--input-bg);
+  color: var(--text);
+  font-family: inherit;
+  outline: none;
+}
+
+.primary-btn {
+  width: 100%;
+  padding: 16px;
+  background: var(--green);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font-weight: 700;
+  cursor: pointer;
 }
 
 .blob {
@@ -38,23 +107,17 @@ body {
   filter: blur(80px);
   z-index: -1;
 }
-
 .blob-1 {
-  background: #22c55e;
+  background: var(--green);
   top: -80px;
   left: -80px;
+  opacity: 0.4;
 }
-
 .blob-2 {
   background: #38bdf8;
   bottom: 10%;
   right: -100px;
-}
-
-.blob-3 {
-  background: #a78bfa;
-  top: 40%;
-  left: -120px;
+  opacity: 0.4;
 }
 
 .app {
@@ -507,17 +570,13 @@ button.cta-btn::-moz-focus-inner {
 }
 
 .back-btn {
-  align-self: flex-start;
-  background: var(--glass);
+  color: var(--bg);
   border: 1px solid var(--border);
-  color: var(--text);
+  background: var(--text);
   padding: 10px;
   border-radius: 12px;
   cursor: pointer;
-  margin-bottom: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+
   transition: transform 0.2s ease;
 }
 

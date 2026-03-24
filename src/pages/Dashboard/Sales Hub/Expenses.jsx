@@ -8,6 +8,8 @@ import {
   faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
 import API_BASE_URL from "../../../apiConfig";
+
+import "../../../App.css";
 import "./Expenses.css";
 
 const Expenses = () => {

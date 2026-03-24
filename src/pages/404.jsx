@@ -5,6 +5,7 @@ import {
   faRotateLeft,
   faTriangleExclamation,
 } from "@fortawesome/free-solid-svg-icons";
+import "../App.css";
 import "./404.css";
 
 const PageNotFound = () => {

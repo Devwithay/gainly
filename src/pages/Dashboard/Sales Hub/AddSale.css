@@ -12,16 +12,6 @@
   margin-bottom: 30px;
 }
 
-.back-btn {
-  background: var(--glass-bg);
-  border: 1px solid var(--border);
-  color: var(--text);
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  cursor: pointer;
-}
-
 .add-sale-card {
   padding: 30px 20px;
   margin-top: 20px;
@@ -69,7 +59,7 @@
   display: flex;
   gap: 10px;
   margin-bottom: 20px;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--card-bg);
   padding: 5px;
   border-radius: 12px;
   border: 1px solid var(--border);
@@ -88,7 +78,7 @@
 }
 
 .item-type-toggle button.active {
-  background: #7c4dff; 
+  background: #7c4dff;
   color: white;
   box-shadow: 0 4px 15px rgba(124, 77, 255, 0.3);
 }

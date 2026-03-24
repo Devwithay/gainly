@@ -8,6 +8,7 @@ import {
   faSpinner,
 } from "@fortawesome/free-solid-svg-icons";
 import API_BASE_URL from "../../../apiConfig";
+import "../../../App.css";
 import "./DebtList.css";
 
 const DebtList = ({ trackAction }) => {

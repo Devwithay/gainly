@@ -1,8 +1,8 @@
 .mobile-optimized {
   padding: 15px;
-  background: #0f0f12;
+  background: var(--bg);
+  color: var(--text);
   min-height: 100vh;
-  color: white;
 }
 
 .summary-card {
@@ -10,11 +10,7 @@
   justify-content: space-around;
   padding: 20px;
   margin-bottom: 20px;
-  background: linear-gradient(
-    135px,
-    rgba(124, 77, 255, 0.2),
-    rgba(0, 0, 0, 0.3)
-  );
+  background: linear-gradient(135deg, rgba(124, 77, 255, 0.1), var(--glass));
   border: 1px solid rgba(124, 77, 255, 0.3);
   text-align: center;
 }
@@ -50,10 +46,11 @@
 .mobile-select {
   width: 100%;
   padding: 12px;
-  background: rgba(255, 255, 255, 0.05);
+
   border: 1px solid #333;
   border-radius: 10px;
-  color: black;
+  color: var(--text);
+  background: var(--input-bg);
   font-size: 1rem;
 }
 
