@@ -7,6 +7,8 @@ import {
   faSpinner,
   faCheckCircle,
   faTag,
+  faUser,
+  faWallet,
 } from "@fortawesome/free-solid-svg-icons";
 import API_BASE_URL from "../../../apiConfig";
 import "./AddSale.css";
@@ -16,6 +18,8 @@ const AddSale = ({ trackAction }) => {
   const navigate = useNavigate();
 
   const [product, setProduct] = useState("");
+  const [customerName, setCustomerName] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("Transfer");
   const [totalAmount, setTotalAmount] = useState("");
   const [amountPaid, setAmountPaid] = useState("");
   const [cost, setCost] = useState("");
@@ -46,10 +50,11 @@ const AddSale = ({ trackAction }) => {
     }
 
     setIsSubmitting(true);
-
     const formData = new FormData();
     formData.append("phone", user.phone);
     formData.append("product", product);
+    formData.append("customer_name", customerName || "Valued Customer");
+    formData.append("payment_method", paymentMethod);
     formData.append("amount", finalTotal);
     formData.append("amount_paid", finalPaid);
     formData.append("cost_price", finalCost);
@@ -62,14 +67,9 @@ const AddSale = ({ trackAction }) => {
         body: formData,
       });
       const result = await response.text();
-
       if (result.trim() === "success") {
         if (trackAction) trackAction("logged_a_sale");
-
-        if (onboardingStep === 3) {
-          completeStep(3);
-        }
-
+        if (onboardingStep === 3) completeStep(3);
         setSuccess(true);
         setTimeout(() => navigate("/sales-hub"), 1500);
       } else {
@@ -116,6 +116,18 @@ const AddSale = ({ trackAction }) => {
             </div>
 
             <div className="form-group">
+              <label>
+                <FontAwesomeIcon icon={faUser} /> Customer Name
+              </label>
+              <input
+                type="text"
+                placeholder="e.g. Faizah"
+                value={customerName}
+                onChange={(e) => setCustomerName(e.target.value)}
+              />
+            </div>
+
+            <div className="form-group">
               <label>Product/Service Name</label>
               <input
                 type="text"
@@ -131,7 +143,7 @@ const AddSale = ({ trackAction }) => {
                 <label>Total Price (₦)</label>
                 <input
                   type="text"
-                  placeholder="e.g. 50k"
+                  placeholder="50k"
                   value={totalAmount}
                   onChange={(e) => setTotalAmount(e.target.value)}
                   required
@@ -141,7 +153,7 @@ const AddSale = ({ trackAction }) => {
                 <label>Amount Paid (₦)</label>
                 <input
                   type="text"
-                  placeholder="e.g. 20k"
+                  placeholder="20k"
                   value={amountPaid}
                   onChange={(e) => setAmountPaid(e.target.value)}
                 />
@@ -149,10 +161,25 @@ const AddSale = ({ trackAction }) => {
             </div>
 
             <div className="form-group">
+              <label>
+                <FontAwesomeIcon icon={faWallet} /> Payment Method
+              </label>
+              <select
+                className="custom-select"
+                value={paymentMethod}
+                onChange={(e) => setPaymentMethod(e.target.value)}>
+                <option value="Transfer">Bank Transfer</option>
+                <option value="Cash">Cash</option>
+                <option value="POS">POS</option>
+                <option value="Split">Split Payment</option>
+              </select>
+            </div>
+
+            <div className="form-group">
               <label>Cost Price (Optional)</label>
               <input
                 type="text"
-                placeholder="e.g. 15k"
+                placeholder="15k"
                 value={cost}
                 onChange={(e) => setCost(e.target.value)}
               />
