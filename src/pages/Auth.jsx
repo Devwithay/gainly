@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import "../App.css";
 import { AuthContext } from "../Context Api/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faEye,
@@ -145,15 +145,15 @@ export default function Auth() {
     }
   };
 
-  const handleForgotPassword = () => {
-    const contactCeo = window.confirm(
-      "Forgot Password? For security, password resets are handled manually by the Gainly Team. Contact support now?",
-    );
-    if (contactCeo) {
-      window.location.href =
-        "https://wa.me/2347030318983?text=Hi%20Gainly%20Support,%20I%20forgot%20my%20password.";
-    }
-  };
+  // const handleForgotPassword = () => {
+  //   const contactCeo = window.confirm(
+  //     "Forgot Password? For security, password resets are handled manually by the Gainly Team. Contact support now?",
+  //   );
+  //   if (contactCeo) {
+  //     window.location.href =
+  //       "https://wa.me/2347030318983?text=Hi%20Gainly%20Support,%20I%20forgot%20my%20password.";
+  //   }
+  // };
 
   return (
     <>
@@ -283,8 +283,8 @@ export default function Auth() {
             </div>
 
             {!isSignUp && (
-              <button
-                onClick={handleForgotPassword}
+              <Link
+                to="/forgot-password"
                 style={{
                   background: "none",
                   border: "none",
@@ -294,7 +294,7 @@ export default function Auth() {
                   cursor: "pointer",
                 }}>
                 Forgot Password?
-              </button>
+              </Link>
             )}
           </div>
 

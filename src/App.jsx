@@ -15,7 +15,7 @@ import TrackSales from "./pages/Dashboard/Sales Hub/TrackSales";
 import Expenses from "./pages/Dashboard/Sales Hub/Expenses";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import Auth from "./pages/Auth";
-
+import ForgotPassword from "./pages/ForgotPassword";
 import DashboardLayout from "./pages/Dashboard/DashboardLayout";
 import { ThemeContext } from "./Context Api/useTheme";
 import PageNotFound from "./pages/404";
@@ -228,7 +228,7 @@ export default function App() {
             path="/auth"
             element={<Auth onLoginSuccess={(userData) => setUser(userData)} />}
           />
-
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route
             element={
               <ProtectedRoute>

@@ -6,10 +6,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [hasExpenses, setHasExpenses] = useState(null);
-  const [onboardingStep, setOnboardingStep] = useState(() => {
-    return parseInt(localStorage.getItem("gainly_onboarding_step")) || 0;
-  });
-
+  const [onboardingStep, setOnboardingStep] = useState(0); // Starts at 0, updated by DB
   const [deferredPrompt, setDeferredPrompt] = useState(null);
 
   useEffect(() => {
@@ -19,10 +16,25 @@ export const AuthProvider = ({ children }) => {
     });
   }, []);
 
-  const completeStep = (stepNumber, jumpTo = null) => {
+  // Updated to save to Server
+  const completeStep = async (stepNumber, jumpTo = null) => {
     const nextStep = jumpTo !== null ? jumpTo : stepNumber + 1;
     setOnboardingStep(nextStep);
-    localStorage.setItem("gainly_onboarding_step", nextStep);
+
+    if (user?.phone) {
+      const formData = new FormData();
+      formData.append("phone", user.phone);
+      formData.append("step", nextStep);
+
+      try {
+        await fetch(`${API_BASE_URL}/update-onboarding.php`, {
+          method: "POST",
+          body: formData,
+        });
+      } catch (e) {
+        console.error("Failed to sync onboarding step", e);
+      }
+    }
   };
 
   const triggerAndroidInstall = async () => {
@@ -37,6 +49,7 @@ export const AuthProvider = ({ children }) => {
       completeStep(1);
     }
   };
+
   const fetchUserProfile = useCallback(async (phone) => {
     try {
       const response = await fetch(
@@ -61,13 +74,15 @@ export const AuthProvider = ({ children }) => {
           fullname: data.fullname,
           firstName: data.fullname ? data.fullname.split(" ")[0] : "CEO",
           bname: data.bname,
-
           categories: userNiches,
           is_verified: parseInt(data.is_verified) || 0,
           salesGoal: parseFloat(data.salesGoal) || 500000,
           profilePic: data.profilePic,
         };
         setUser(userData);
+        // Sync onboarding step from profile data if exists
+        if (data.onboarding_step !== undefined)
+          setOnboardingStep(parseInt(data.onboarding_step));
         return userData;
       }
     } catch (err) {
@@ -76,40 +91,29 @@ export const AuthProvider = ({ children }) => {
     return null;
   }, []);
 
-  const updateUser = (newData) => {
-    setUser((prev) => ({ ...prev, ...newData }));
-  };
-
+  // --- NEW: Persistent Check via Cookie ---
   useEffect(() => {
     const initializeAuth = async () => {
-      const savedPhone = localStorage.getItem("userSession");
-      if (savedPhone) {
-        await fetchUserProfile(savedPhone);
+      try {
+        const response = await fetch(`${API_BASE_URL}/check-auth.php`, {
+          credentials: "include", // Important to send cookies
+        });
+        const data = await response.json();
+
+        if (data.authenticated) {
+          await fetchUserProfile(data.phone);
+        } else {
+          // Fallback to local if server check fails but session exists
+          const savedPhone = localStorage.getItem("userSession");
+          if (savedPhone) await fetchUserProfile(savedPhone);
+        }
+      } catch (err) {
+        console.error("Auth check failed", err);
       }
       setLoading(false);
     };
     initializeAuth();
   }, [fetchUserProfile]);
-
-  const register = async (fname, bname, category, phone, pass) => {
-    const formData = new FormData();
-    formData.append("fname", fname);
-    formData.append("bname", bname);
-
-    formData.append("categories", category);
-    formData.append("phone", phone);
-    formData.append("pass", pass);
-
-    try {
-      const response = await fetch(`${API_BASE_URL}/create-vendor.php`, {
-        method: "POST",
-        body: formData,
-      });
-      return await response.text();
-    } catch (error) {
-      return "connection_error";
-    }
-  };
 
   const login = async (phone, password) => {
     const formData = new FormData();
@@ -122,13 +126,12 @@ export const AuthProvider = ({ children }) => {
         body: formData,
       });
 
-      const result = await response.text();
-      const trimmedPhone = result.trim();
+      const data = await response.json(); // Now handling JSON
 
-      if (result && trimmedPhone.length >= 10 && !result.includes("<br")) {
-        localStorage.setItem("userSession", trimmedPhone);
-
-        await fetchUserProfile(trimmedPhone);
+      if (data.status === "success") {
+        localStorage.setItem("userSession", data.phone);
+        setOnboardingStep(data.onboarding_step);
+        await fetchUserProfile(data.phone);
         return true;
       }
       return false;
@@ -136,20 +139,29 @@ export const AuthProvider = ({ children }) => {
       return false;
     }
   };
-
-  const logout = () => {
-    localStorage.removeItem("userSession");
-    setUser(null);
+  const isRunningInPWA = () => {
+    return (
+      window.matchMedia("(display-mode: standalone)").matches ||
+      window.navigator.standalone ||
+      document.referrer.includes("android-app://")
+    );
   };
+  // const logout = () => {
+  //   localStorage.removeItem("userSession");
+
+  //   fetch(`${API_BASE_URL}/logout.php`);
+  //   setUser(null);
+  // };
+
   return (
     <AuthContext.Provider
       value={{
         user,
         login,
-        register,
-        logout,
+        // logout,
+        isRunningInPWA,
         loading,
-        updateUser,
+
         onboardingStep,
         completeStep,
         triggerAndroidInstall,
