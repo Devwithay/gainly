@@ -35,6 +35,9 @@
   align-items: center;
   gap: 10px;
 }
+.glass-card {
+  border: 1px solid var(--text);
+}
 
 .glass-search input {
   width: 130px;

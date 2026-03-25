@@ -17,6 +17,7 @@ import {
   detectIntent,
   generateResponse,
 } from "../../components/ai/ai";
+import LoadingScreen from "../../components/LoadingScreen";
 
 const CardSkeleton = () => (
   <div className="glass-card skeleton-card">
@@ -194,8 +195,7 @@ function Home({ trackAction }) {
       <div className="blob blob-1"></div>
       <div className="blob blob-2"></div>
 
-      <Suspense
-        fallback={<div className="loading-screen">Loading Gainly_Ai...</div>}>
+      <Suspense fallback={<LoadingScreen />}>
         <div
           className={`drawer-overlay ${isAiOpen ? "active" : ""}`}
           onClick={() => setIsAiOpen(false)}>

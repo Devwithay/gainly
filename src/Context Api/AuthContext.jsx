@@ -6,6 +6,7 @@ import React, {
   useRef,
 } from "react";
 import API_BASE_URL from "../apiConfig";
+import LoadingScreen from "../components/LoadingScreen";
 
 export const AuthContext = createContext();
 
@@ -193,19 +194,7 @@ export const AuthProvider = ({ children }) => {
         setHasExpenses,
         deferredPrompt,
       }}>
-      {!loading ? (
-        children
-      ) : (
-        <div
-          style={{
-            height: "100vh",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}>
-          <p>Loading Gainly...</p>
-        </div>
-      )}
+      {!loading ? children : <LoadingScreen />}
     </AuthContext.Provider>
   );
 };

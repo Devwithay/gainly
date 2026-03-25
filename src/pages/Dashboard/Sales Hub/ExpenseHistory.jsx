@@ -9,8 +9,8 @@ import {
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import API_BASE_URL from "../../../apiConfig";
-import "./TrackSales.css";
-
+import "./Expenses.css";
+import LoadingScreen from "../../../components/LoadingScreen";
 const ExpenseHistory = ({ trackAction }) => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -61,23 +61,26 @@ const ExpenseHistory = ({ trackAction }) => {
       </div>
       <div className="history-list">
         {loading ? (
-          <p>Loading expenses...</p>
+          <LoadingScreen />
         ) : expenses.length > 0 ? (
           expenses.map((exp) => (
-            <div key={exp.id} className="glass-card sale-item">
+            <div
+              key={exp.id}
+              className="glass-card sale-item"
+              style={{ border: "1px, solid var(--text)" }}>
               <div className="sale-info">
                 <div
                   className="sale-icon-circle"
                   style={{
-                    background: "rgba(234, 88, 12, 0.2)",
-                    color: "#f97316",
+                    background: "var(--bg)",
+                    color: "var(--text)",
                   }}>
                   <FontAwesomeIcon icon={faArrowDownWideShort} />
                 </div>
                 <div>
                   <h4>{exp.expense_name}</h4>
                   <p className="sale-date">
-                    <span className="cat-tag" style={{ color: "#f97316" }}>
+                    <span className="cat-tag" style={{ color: "var(--text)" }}>
                       {exp.category}
                     </span>{" "}
                     • {new Date(exp.expense_date).toLocaleDateString()}
@@ -85,7 +88,7 @@ const ExpenseHistory = ({ trackAction }) => {
                 </div>
               </div>
               <div className="sale-amount-area">
-                <h3 className="sale-amount" style={{ color: "#fb7185" }}>
+                <h3 className="sale-amount" style={{ color: "#ff0026" }}>
                   - ₦{Number(exp.amount).toLocaleString()}
                 </h3>
               </div>

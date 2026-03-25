@@ -4,7 +4,6 @@ import { AuthContext } from "../../../Context Api/AuthContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronLeft,
-  faSpinner,
   faCheckCircle,
   faTag,
   faUser,
@@ -13,6 +12,7 @@ import {
 import API_BASE_URL from "../../../apiConfig";
 import "../../../App.css";
 import "./AddSale.css";
+import LoadingScreen from "../../../components/LoadingScreen";
 
 const AddSale = ({ trackAction }) => {
   const { user, completeStep, onboardingStep } = useContext(AuthContext);
@@ -75,13 +75,16 @@ const AddSale = ({ trackAction }) => {
         setTimeout(() => navigate("/sales-hub"), 1500);
       } else {
         alert("Server error: " + result);
+        setIsSubmitting(false);
       }
     } catch (err) {
       alert("Network error. Try again.");
-    } finally {
       setIsSubmitting(false);
     }
   };
+
+  // High-end submission feel
+  if (isSubmitting) return <LoadingScreen message="Recording your profit..." />;
 
   return (
     <div className="add-sale-container">
@@ -201,15 +204,8 @@ const AddSale = ({ trackAction }) => {
               </button>
             </div>
 
-            <button
-              type="submit"
-              className="cta-btn submit-btn"
-              disabled={isSubmitting}>
-              {isSubmitting ? (
-                <FontAwesomeIcon icon={faSpinner} spin />
-              ) : (
-                "Log Sale"
-              )}
+            <button type="submit" className="cta-btn submit-btn">
+              Log Sale
             </button>
           </form>
         )}

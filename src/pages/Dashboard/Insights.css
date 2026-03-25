@@ -189,3 +189,128 @@
   justify-content: space-between;
   align-items: center;
 }
+
+.time-selector {
+  position: relative;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 5px 12px;
+  display: flex;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.time-selector:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--primary-color);
+}
+
+.time-selector select {
+  background: transparent;
+  color: var(--text);
+  border: none;
+  outline: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  appearance: none;
+  padding-right: 20px;
+}
+
+.time-selector::after {
+  content: "▾";
+  position: absolute;
+  right: 12px;
+
+  pointer-events: none;
+}
+
+.niche-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.niche-stat-card {
+  position: relative;
+  overflow: hidden;
+  padding: 18px !important;
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.08),
+    rgba(255, 255, 255, 0.03)
+  ) !important;
+  border: 1px solid var(--text);
+  transition:
+    transform 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.niche-stat-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(124, 58, 237, 0.5) !important;
+}
+
+.niche-card-header h4 {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.efficiency-tag {
+  font-size: 0.7rem;
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-weight: 700;
+}
+
+.efficiency-tag.high {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+}
+
+.efficiency-tag.low {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+.niche-main-metrics .metric label {
+  font-size: 0.7rem;
+  display: block;
+  margin-top: 10px;
+  opacity: 0.5;
+}
+
+.niche-main-metrics .metric p {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.niche-health-bar {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  margin-top: 15px;
+  overflow: hidden;
+}
+
+.health-fill {
+  height: 100%;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #7c3aed, #a78bfa);
+  box-shadow: 0 0 10px rgba(124, 58, 237, 0.4);
+  transition: width 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.niche-insight-text {
+  font-size: 0.75rem;
+  margin-top: 12px;
+  font-style: italic;
+  opacity: 0.8;
+}

@@ -12,6 +12,7 @@ import {
 import API_BASE_URL from "../../../apiConfig";
 import "../../../App.css";
 import "./TrackSales.css";
+import LoadingScreen from "../../../components/LoadingScreen";
 
 const TrackSales = ({ trackAction }) => {
   const { user } = useContext(AuthContext);
@@ -97,9 +98,7 @@ const TrackSales = ({ trackAction }) => {
 
       <div className="history-list">
         {loading ? (
-          <div className="loader-box">
-            <p>Analyzing records...</p>
-          </div>
+          <LoadingScreen />
         ) : filteredSales.length > 0 ? (
           filteredSales.map((sale) => {
             const saleProfit =

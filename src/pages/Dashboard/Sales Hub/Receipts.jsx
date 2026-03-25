@@ -9,7 +9,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import "../../../App.css";
 import "./Receipts.css";
-
+import LoadingScreen from "../../../components/LoadingScreen"; // Adjust path as needed
 import API_BASE_URL from "../../../apiConfig";
 
 const Receipts = () => {
@@ -17,11 +17,17 @@ const Receipts = () => {
   const navigate = useNavigate();
   const [sales, setSales] = useState([]);
   const [selectedSale, setSelectedSale] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(true);
     fetch(`${API_BASE_URL}/fetch-sales-history.php?phone=${user.phone}`)
       .then((res) => res.json())
-      .then((data) => setSales(data));
+      .then((data) => {
+        setSales(data);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
   }, [user]);
 
   const handleWhatsAppShare = (sale) => {
@@ -57,6 +63,8 @@ const Receipts = () => {
     window.open(`https://wa.me/?text=${message}`, "_blank");
     if (onboardingStep === 6) completeStep(6);
   };
+
+  if (loading) return <LoadingScreen />;
 
   return (
     <div className="expenses-container">
@@ -150,28 +158,35 @@ const Receipts = () => {
         </div>
       ) : (
         <div className="history-list">
-          {sales.map((sale) => (
-            <div
-              key={sale.id}
-              className="glass-card sale-item"
-              onClick={() => setSelectedSale(sale)}>
-              <div className="sale-info">
-                <FontAwesomeIcon
-                  icon={faReceipt}
-                  className="blue"
-                  style={{ marginRight: "10px" }}
-                />
-                <div>
-                  <h4>{sale.product_name}</h4>
-                  <p className="sale-date">
-                    {sale.customer_name} • ₦
-                    {Number(sale.amount).toLocaleString()}
-                  </p>
+          {sales.length > 0 ? (
+            sales.map((sale) => (
+              <div
+                key={sale.id}
+                className="glass-card sale-item"
+                onClick={() => setSelectedSale(sale)}
+                style={{ border: "1px solid var(--text)" }}>
+                <div className="sale-info">
+                  <FontAwesomeIcon
+                    icon={faReceipt}
+                    className="blue"
+                    style={{ marginRight: "10px" }}
+                  />
+                  <div>
+                    <h4>{sale.product_name}</h4>
+                    <p className="sale-date">
+                      {sale.customer_name} • ₦
+                      {Number(sale.amount).toLocaleString()}
+                    </p>
+                  </div>
                 </div>
+                <FontAwesomeIcon icon={faShareNodes} style={{ opacity: 0.5 }} />
               </div>
-              <FontAwesomeIcon icon={faShareNodes} style={{ opacity: 0.5 }} />
+            ))
+          ) : (
+            <div className="empty-state">
+              <p>No receipts found.</p>
             </div>
-          ))}
+          )}
         </div>
       )}
     </div>

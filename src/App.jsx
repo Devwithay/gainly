@@ -29,6 +29,7 @@ import Receipts from "./pages/Dashboard/Sales Hub/Receipts";
 import DebtList from "./pages/Dashboard/Sales Hub/DebtList";
 import { AuthContext } from "./Context Api/AuthContext";
 import API_BASE_URL from "./apiConfig";
+import LoadingScreen from "./components/LoadingScreen";
 
 const Insights = lazy(() => import("./pages/Dashboard/Insight"));
 const SalesHub = lazy(() => import("./pages/Dashboard/Sales Hub/SalesHub"));
@@ -221,14 +222,14 @@ function AppContent({ showModal, setShowModal }) {
   };
 
   if (loading) {
-    return <div className="loading-screen">Loading Gainly...</div>;
+    return LoadingScreen;
   }
 
   return (
     <>
       {user && onboardingStep < 13 && <CaptainGainly />}
 
-      <Suspense fallback={<div className="loading-screen">Loading...</div>}>
+      <Suspense fallback={<LoadingScreen />}>
         <Routes>
           <Route
             path="/"
