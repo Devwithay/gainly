@@ -4,11 +4,12 @@ import CaptainGainly from "./components/Onboarding/CaptainGainly";
 import {
   faMoon,
   faSun,
-  faCode,
-  faChartLine,
-  faUsers,
-  faBolt,
+  faChartPie,
+  faShield,
+  faArrowTrendUp,
+  faCircleCheck,
 } from "@fortawesome/free-solid-svg-icons";
+import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 import "./App.css";
 import AddSale from "./pages/Dashboard/Sales Hub/AddSale";
 import TrackSales from "./pages/Dashboard/Sales Hub/TrackSales";
@@ -40,158 +41,150 @@ function LandingPage({ showModal, setShowModal }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user) {
-      navigate("/dashboard");
-    }
+    if (user) navigate("/dashboard");
   }, [user, navigate]);
 
   const handleJoinWaitlist = () => {
-    const whatsappUrl =
-      "https://wa.me/2347030318983?text=Hi%20I%20want%20early%20access%20to%20Gainly.";
-    window.open(whatsappUrl, "_blank");
+    window.open(
+      "https://wa.me/2347030318983?text=Hi%20I%20want%to%20join%20Gainly%20Community.",
+      "_blank",
+    );
   };
 
   return (
-    <>
-      <button
-        className="theme-toggle"
-        onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-        aria-label="Toggle theme">
-        <FontAwesomeIcon icon={theme === "light" ? faMoon : faSun} />
-      </button>
+    <div className="landing-wrapper">
+      {/* THEME TOGGLE DOCK */}
+      <div className="top-actions">
+        <button
+          className="glass-toggle"
+          onClick={() => setTheme(theme === "light" ? "dark" : "light")}>
+          <FontAwesomeIcon icon={theme === "light" ? faMoon : faSun} />
+        </button>
+      </div>
 
       {showModal && (
         <div className="modal-overlay">
-          <div className="modal-card glass">
-            <h2 className="modal-headline">Level Up Your Hustle 🚀</h2>
+          <div className="modal-card premium-glass animate-pop">
+            <div className="modal-glow"></div>
+            <h2 className="modal-headline">Upgrade Your Hustle 🚀</h2>
             <p className="modal-subhead">
-              Stop running your business on "vibes." Join 100+ Unilorin vendors
-              using Gainly to track profits and scale professionally.
+              Join the 1% of student vendors using data to dominate. No more
+              vibes. Just growth.
             </p>
             <div className="modal-actions">
               <button
-                className="cta-btn modal-enter"
-                onClick={() => setShowModal(false)}>
-                Explore Features
+                className="apple-btn primary"
+                onClick={() => navigate("/auth")}>
+                Get Started
               </button>
               <button
-                onClick={() => navigate("/auth")}
-                className="cta-btn shine">
-                Log In Now
+                className="apple-btn secondary"
+                onClick={() => setShowModal(false)}>
+                Later
               </button>
             </div>
           </div>
         </div>
       )}
 
-      <div className="blob blob-1"></div>
-      <div className="blob blob-2"></div>
+      {/* BACKGROUND BLOBS */}
+      <div className="background-elements">
+        <div className="floating-blob green-blob"></div>
+        <div className="floating-blob blue-blob"></div>
+      </div>
 
-      <main className={`app ${showModal ? "blurred" : ""}`}>
-        <nav className="landing-nav">
-          <div className="logo-glow">
-            <FontAwesomeIcon icon={faCode} style={{ marginRight: 8 }} />
-            Gainly
-          </div>
-          <button
-            onClick={() => navigate("/auth")}
-            className="nav-login cta-btn">
-            Login
+      <main className={`landing-container ${showModal ? "blurred" : ""}`}>
+        {/* NAV DOCK */}
+        <nav className="floating-nav">
+          <div className="nav-logo">GAINLY</div>
+          <button onClick={() => navigate("/auth")} className="nav-cta">
+            Log In
           </button>
         </nav>
 
-        <section className="hero">
-          <div className="hero-content">
-            <span className="badge">
-              Built for Unilorin Student Vendors, Open to All
-            </span>
-            <h1 className="hero-title">
-              The Operating System for <br />
-              <span className="gradient-text">Student CEOs.</span>
-            </h1>
-            <p className="hero-desc">
-              Gainly turns your daily hustle into a structured brand. Track
-              sales, manage expenses, and get insights that help you grow—all in
-              one place.
+        {/* HERO SECTION */}
+        <section className="hero-v2">
+          <div className="badge-pill">Built for the next-gen Student CEO</div>
+          <h1 className="main-headline">
+            Stop Hustling.
+            <br />
+            <span className="gradient-text">Start Building.</span>
+          </h1>
+          <p className="hero-subtext">
+            Gainly is the all-in-one operating system for student entrepreneurs.
+            Track sales, issue professional receipts, and scale your brand with
+            precision.
+          </p>
+          <div className="hero-actions">
+            <button
+              className="hero-btn-primary shine"
+              onClick={() => navigate("/auth")}>
+              Launch Your Business
+            </button>
+            <button className="hero-btn-secondary" onClick={handleJoinWaitlist}>
+              <FontAwesomeIcon icon={faWhatsapp} /> Join Community
+            </button>
+          </div>
+        </section>
+
+        {/* PROOF STRIP */}
+        <div className="trust-strip">
+          <span>TRUSTED BY 100+ UNILORIN VENDORS</span>
+          <div className="divider-line"></div>
+        </div>
+
+        {/* FEATURE GRID */}
+        <section className="features-section">
+          <div className="feature-card glass-v2">
+            <div className="icon-box purple-box">
+              <FontAwesomeIcon icon={faChartPie} />
+            </div>
+            <h3>Revenue Clarity</h3>
+            <p>
+              Know your profit to the last Naira. Stop wondering where your
+              capital went.
             </p>
-            <div className="hero-btns">
-              <button
-                onClick={() => navigate("/auth")}
-                className="cta-btn shine">
-                Start Tracking for Free
-              </button>
-              <button
-                onClick={handleJoinWaitlist}
-                className="cta-btn secondary">
-                Join Community
-              </button>
+          </div>
+
+          <div className="feature-card glass-v2">
+            <div className="icon-box green-box">
+              <FontAwesomeIcon icon={faShield} />
             </div>
+            <h3>Instant Credibility</h3>
+            <p>
+              Issue Apple-level digital receipts that make customers trust your
+              brand instantly.
+            </p>
+          </div>
+
+          <div className="feature-card glass-v2">
+            <div className="icon-box blue-box">
+              <FontAwesomeIcon icon={faArrowTrendUp} />
+            </div>
+            <h3>Smart Scaling</h3>
+            <p>
+              Identify your best-selling products and restock with data, not
+              guesswork.
+            </p>
           </div>
         </section>
 
-        <section className="section">
-          <div className="stats-strip glass">
-            <div className="stat-item">
-              <h3>100%</h3>
-              <p>Mobile Friendly</p>
-            </div>
-            <div className="stat-item">
-              <h3>₦0</h3>
-              <p>Initial Cost</p>
-            </div>
-            <div className="stat-item">
-              <h3>24/7</h3>
-              <p>CEO Support</p>
-            </div>
-          </div>
-        </section>
-
-        <section className="section">
-          <h2 className="section-title">Everything you need to scale</h2>
-          <div className="card-grid">
-            <div className="card glass">
-              <FontAwesomeIcon
-                icon={faChartLine}
-                className="card-icon purple"
-              />
-              <h3>Sales Tracking</h3>
-              <p>
-                Know exactly how much you're making. No more "where did my money
-                go?" moments.
-              </p>
-            </div>
-            <div className="card glass">
-              <FontAwesomeIcon icon={faUsers} className="card-icon blue" />
-              <h3>Customer Trust</h3>
-              <p>
-                Get a verified badge and professional receipts that make
-                customers take you seriously.
-              </p>
-            </div>
-            <div className="card glass">
-              <FontAwesomeIcon icon={faBolt} className="card-icon orange" />
-              <h3>Smart Insights</h3>
-              <p>
-                Understand your best-selling days and products so you can
-                restock smarter.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        <section className="section cta-section glass">
-          <h2>Ready to turn your hustle into a legacy?</h2>
-          <p>Join the next generation of student entrepreneurs at Unilorin.</p>
-          <button onClick={() => navigate("/auth")} className="cta-btn shine">
-            Create Your Account
+        {/* FINAL CTA */}
+        <section className="closing-cta glass-v2">
+          <h2>Ready to go pro?</h2>
+          <p>Don't just sell. Build a legacy.</p>
+          <button
+            className="hero-btn-primary"
+            onClick={() => navigate("/auth")}>
+            Create Free Account
           </button>
         </section>
 
-        <footer className="footer">
-          © {new Date().getFullYear()} Gainly — The Student CEO's Choice
+        <footer className="landing-footer">
+          <p>© {new Date().getFullYear()} GAINLY — Designed for Growth.</p>
         </footer>
       </main>
-    </>
+    </div>
   );
 }
 
