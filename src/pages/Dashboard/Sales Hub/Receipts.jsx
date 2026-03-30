@@ -52,40 +52,71 @@ const Receipts = () => {
     }
   };
 
-  const handleWhatsAppShare = (sale) => {
+  const handleWhatsAppShare = async (sale) => {
+    // If we are in Image mode, try to share the file
+    if (format === "image" && receiptRef.current) {
+      try {
+        const canvas = await html2canvas(receiptRef.current, {
+          backgroundColor: "#ffffff", // Ensure background isn't transparent
+          scale: 2,
+        });
+
+        canvas.toBlob(async (blob) => {
+          const file = new File([blob], `Gainly_Receipt_${sale.id}.png`, {
+            type: "image/png",
+          });
+
+          // Check if the browser supports sharing files
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({
+              files: [file],
+              title: `Receipt from ${user.bname || "Gainly Vendor"}`,
+            });
+          } else {
+            // Fallback if sharing isn't supported (like on some Desktop browsers)
+            alert(
+              "Your browser doesn't support direct image sharing. Please use 'Save Image' and send manually, or switch to 'WhatsApp Text' mode.",
+            );
+          }
+        }, "image/png");
+
+        if (onboardingStep === 6) completeStep(6);
+        return; // Exit here so it doesn't run the text logic below
+      } catch (error) {
+        console.error("Error sharing image:", error);
+      }
+    }
+
+    // --- TEXT MODE LOGIC (Fallback or if format is "text") ---
     const businessName = user.bname || "Our Store";
     const amount = Number(sale.amount).toLocaleString();
     const paid = Number(sale.amount_paid).toLocaleString();
     const balance = Number(sale.debt_balance).toLocaleString();
     const date = new Date(sale.sale_date).toLocaleDateString();
     const product = sale.product_name;
-
     const customer = sale.customer_name || "Valued Customer";
     const payment = sale.payment_method || "Not Specified";
-    const closingMessage =
-      `Hey ${customer}, thanks for choosing *${businessName}*! %0A` +
-      `We hope you enjoy your *${product}*. Your support keeps our small business thriving! 🚀`;
+
     const message =
       `*RECEIPT FROM ${businessName.toUpperCase()}*%0A` +
       `--------------------------%0A` +
       `*Receipt No:* G-LY-${sale.id}%0A` +
       `*Customer:* ${customer}%0A` +
       `--------------------------%0A` +
-      `*Item:* ${sale.product_name}%0A` +
+      `*Item:* ${product}%0A` +
       `*Total Amount:* ₦${amount}%0A` +
       `*Paid:* ₦${paid}%0A` +
       `*Balance:* ₦${balance}%0A` +
       `*Payment Method:* ${payment}%0A` +
       `*Date:* ${date}%0A` +
       `--------------------------%0A` +
-      `${closingMessage}%0A%0A` +
+      `Hey ${customer}, thanks for choosing *${businessName}*! Your support keeps our small business thriving! 🚀%0A%0A` +
       `_Generated via Gainly Business Suite._%0A` +
       `👉 *Create your own receipts here:* https://gainly.com.ng`;
 
     window.open(`https://wa.me/?text=${message}`, "_blank");
     if (onboardingStep === 6) completeStep(6);
   };
-
   if (loading) return <LoadingScreen />;
 
   return (
