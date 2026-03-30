@@ -5,12 +5,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronLeft,
   faCheckCircle,
-  faTag,
-  faUser,
+  faCirclePlus,
+  faUserAstronaut,
   faWallet,
+  faTag,
+  faLightbulb,
 } from "@fortawesome/free-solid-svg-icons";
 import API_BASE_URL from "../../../apiConfig";
-import "../../../App.css";
 import "./AddSale.css";
 import LoadingScreen from "../../../components/LoadingScreen";
 
@@ -41,12 +42,12 @@ const AddSale = ({ trackAction }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if ("vibrate" in navigator) {
+      navigator.vibrate([100, 50, 100]);
+    }
     const finalTotal = normalize(totalAmount);
-    const finalPaid = normalize(amountPaid);
-    const finalCost = normalize(cost);
-
     if (!product || !finalTotal) {
-      alert("Please enter product name and total price.");
+      alert("Product name and price are required!");
       return;
     }
 
@@ -57,8 +58,8 @@ const AddSale = ({ trackAction }) => {
     formData.append("customer_name", customerName || "Valued Customer");
     formData.append("payment_method", paymentMethod);
     formData.append("amount", finalTotal);
-    formData.append("amount_paid", finalPaid);
-    formData.append("cost_price", finalCost);
+    formData.append("amount_paid", normalize(amountPaid));
+    formData.append("cost_price", normalize(cost));
     formData.append("category", selectedCategory);
     formData.append("item_type", itemType);
 
@@ -74,138 +75,151 @@ const AddSale = ({ trackAction }) => {
         setSuccess(true);
         setTimeout(() => navigate("/sales-hub"), 1500);
       } else {
-        alert("Server error: " + result);
+        alert("Error: " + result);
         setIsSubmitting(false);
       }
     } catch (err) {
-      alert("Network error. Try again.");
+      alert("Network error.");
       setIsSubmitting(false);
     }
   };
 
-  // High-end submission feel
   if (isSubmitting) return <LoadingScreen message="Recording your profit..." />;
 
   return (
-    <div className="add-sale-container">
-      <header className="page-header">
-        <button className="back-btn" onClick={() => navigate(-1)}>
+    <div className="add-sale-page">
+      <header className="add-sale-header">
+        <button className="icon-btn-back" onClick={() => navigate(-1)}>
           <FontAwesomeIcon icon={faChevronLeft} />
         </button>
         <h1>Log Order</h1>
+        <div className="header-dot"></div>
       </header>
 
-      <div className="glass-card add-sale-card">
+      <div className="add-sale-content">
         {success ? (
-          <div className="success-state">
-            <FontAwesomeIcon icon={faCheckCircle} className="success-icon" />
-            <h3>Sale Recorded!</h3>
+          <div className="success-overlay">
+            <FontAwesomeIcon
+              icon={faCheckCircle}
+              className="success-icon-glow"
+            />
+            <h2>Sale Logged!</h2>
           </div>
         ) : (
-          <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label>
-                <FontAwesomeIcon icon={faTag} /> Which Business?
-              </label>
-              <select
-                className="custom-select"
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}>
-                {user?.categories?.map((cat, i) => (
-                  <option key={i} value={cat}>
-                    {cat}
-                  </option>
-                ))}
-              </select>
-            </div>
+          <form className="gainly-form" onSubmit={handleSubmit}>
+            {/* BUSINESS SELECTION */}
+            <section className="form-card highlight">
+              <div className="input-box">
+                <label>
+                  <FontAwesomeIcon icon={faTag} /> Which Business?
+                </label>
+                <select
+                  className="gainly-select"
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}>
+                  {user?.categories?.map((cat, i) => (
+                    <option key={i} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </section>
 
-            <div className="form-group">
-              <label>
-                <FontAwesomeIcon icon={faUser} /> Customer Name
-              </label>
-              <input
-                type="text"
-                placeholder="e.g. Faizah"
-                value={customerName}
-                onChange={(e) => setCustomerName(e.target.value)}
-              />
-            </div>
+            <section className="form-card">
+              <div className="input-box">
+                <label>Customer Name</label>
+                <div className="input-wrapper">
+                  <FontAwesomeIcon
+                    icon={faUserAstronaut}
+                    className="input-icon"
+                  />
+                  <input
+                    type="text"
+                    placeholder="e.g. Faizah"
+                    value={customerName}
+                    onChange={(e) => setCustomerName(e.target.value)}
+                  />
+                </div>
+              </div>
 
-            <div className="form-group">
-              <label>Product/Service Name</label>
-              <input
-                type="text"
-                placeholder="e.g. Wig Installation"
-                value={product}
-                onChange={(e) => setProduct(e.target.value)}
-                required
-              />
-            </div>
-
-            <div className="form-row">
-              <div className="form-group">
-                <label>Total Price (₦)</label>
+              <div className="input-box">
+                <label>Product / Service Name</label>
                 <input
                   type="text"
-                  placeholder="50k"
-                  value={totalAmount}
-                  onChange={(e) => setTotalAmount(e.target.value)}
+                  placeholder="e.g. Wig Installation"
+                  value={product}
+                  onChange={(e) => setProduct(e.target.value)}
                   required
                 />
               </div>
-              <div className="form-group">
-                <label>Amount Paid (₦)</label>
+
+              <div className="grid-2">
+                <div className="input-box">
+                  <label>Total Price (₦)</label>
+                  <input
+                    type="text"
+                    placeholder="50k"
+                    value={totalAmount}
+                    onChange={(e) => setTotalAmount(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="input-box">
+                  <label>Amount Paid (₦)</label>
+                  <input
+                    type="text"
+                    placeholder="20k"
+                    value={amountPaid}
+                    onChange={(e) => setAmountPaid(e.target.value)}
+                  />
+                </div>
+              </div>
+            </section>
+
+            <section className="form-card secondary">
+              <div className="input-box">
+                <label>Cost Price (Optional)</label>
                 <input
                   type="text"
-                  placeholder="20k"
-                  value={amountPaid}
-                  onChange={(e) => setAmountPaid(e.target.value)}
+                  placeholder="15k"
+                  value={cost}
+                  onChange={(e) => setCost(e.target.value)}
                 />
               </div>
-            </div>
 
-            <div className="form-group">
-              <label>
-                <FontAwesomeIcon icon={faWallet} /> Payment Method
-              </label>
-              <select
-                className="custom-select"
-                value={paymentMethod}
-                onChange={(e) => setPaymentMethod(e.target.value)}>
-                <option value="Transfer">Bank Transfer</option>
-                <option value="Cash">Cash</option>
-                <option value="POS">POS</option>
-                <option value="Split">Split Payment</option>
-              </select>
-            </div>
+              <div className="type-pill-toggle">
+                <button
+                  type="button"
+                  className={itemType === "product" ? "active" : ""}
+                  onClick={() => setItemType("product")}>
+                  Product
+                </button>
+                <button
+                  type="button"
+                  className={itemType === "service" ? "active" : ""}
+                  onClick={() => setItemType("service")}>
+                  Service
+                </button>
+              </div>
 
-            <div className="form-group">
-              <label>Cost Price (Optional)</label>
-              <input
-                type="text"
-                placeholder="15k"
-                value={cost}
-                onChange={(e) => setCost(e.target.value)}
-              />
-            </div>
+              <div className="input-box">
+                <label>
+                  <FontAwesomeIcon icon={faWallet} /> Payment Method
+                </label>
+                <select
+                  value={paymentMethod}
+                  onChange={(e) => setPaymentMethod(e.target.value)}>
+                  <option value="Transfer">Bank Transfer</option>
+                  <option value="Cash">Cash</option>
+                  <option value="POS">POS</option>
+                  <option value="Split">Split Payment</option>
+                </select>
+              </div>
+            </section>
 
-            <div className="item-type-toggle">
-              <button
-                type="button"
-                className={itemType === "product" ? "active" : ""}
-                onClick={() => setItemType("product")}>
-                Product
-              </button>
-              <button
-                type="button"
-                className={itemType === "service" ? "active" : ""}
-                onClick={() => setItemType("service")}>
-                Service
-              </button>
-            </div>
-
-            <button type="submit" className="cta-btn submit-btn">
-              Log Sale
+            <button type="submit" className="gainly-submit-btn">
+              <FontAwesomeIcon icon={faCirclePlus} /> Log Sale
             </button>
           </form>
         )}

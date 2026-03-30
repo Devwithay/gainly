@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../Context Api/AuthContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -6,10 +6,16 @@ import {
   faChevronLeft,
   faReceipt,
   faShareNodes,
+  faDownload,
+  faFileLines,
+  faShieldHalved,
+  faChevronRight,
+  faImage,
 } from "@fortawesome/free-solid-svg-icons";
+import html2canvas from "html2canvas";
 import "../../../App.css";
 import "./Receipts.css";
-import LoadingScreen from "../../../components/LoadingScreen"; // Adjust path as needed
+import LoadingScreen from "../../../components/LoadingScreen";
 import API_BASE_URL from "../../../apiConfig";
 
 const Receipts = () => {
@@ -18,6 +24,8 @@ const Receipts = () => {
   const [sales, setSales] = useState([]);
   const [selectedSale, setSelectedSale] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [format, setFormat] = useState("image"); // "image" or "text"
+  const receiptRef = useRef(null);
 
   useEffect(() => {
     setLoading(true);
@@ -29,6 +37,20 @@ const Receipts = () => {
       })
       .catch(() => setLoading(false));
   }, [user]);
+
+  const downloadReceipt = async () => {
+    if (receiptRef.current) {
+      const canvas = await html2canvas(receiptRef.current, {
+        backgroundColor: null,
+        scale: 3, // High-res Apple quality
+      });
+      const image = canvas.toDataURL("image/png");
+      const link = document.createElement("a");
+      link.href = image;
+      link.download = `Gainly_Receipt_${selectedSale.id}.png`;
+      link.click();
+    }
+  };
 
   const handleWhatsAppShare = (sale) => {
     const businessName = user.bname || "Our Store";
@@ -67,7 +89,7 @@ const Receipts = () => {
   if (loading) return <LoadingScreen />;
 
   return (
-    <div className="expenses-container">
+    <div className="receipts-container">
       <header className="page-header">
         <button className="back-btn" onClick={() => navigate(-1)}>
           <FontAwesomeIcon icon={faChevronLeft} />
@@ -77,120 +99,160 @@ const Receipts = () => {
 
       {selectedSale ? (
         <div className="receipt-view animate-in">
-          <div className="receipt-paper">
-            <div className="receipt-top-design"></div>
-            <div className="receipt-header">
-              <h2 className="vendor-name">{user.bname || "GAINLY VENDOR"}</h2>
-              <p className="receipt-subtitle">Official Receipt</p>
-              <div className="divider"></div>
-            </div>
-
-            <div className="receipt-body">
-              <div className="r-item-row">
-                <span className="label">Receipt No</span>
-                <span className="val">#G-LY-{selectedSale.id}</span>
-              </div>
-              <div className="r-item-row">
-                <span className="label">Customer</span>
-                <span className="val">
-                  {selectedSale.customer_name || "Valued Customer"}
-                </span>
-              </div>
-              <div className="r-item-row">
-                <span className="label">Product</span>
-                <span className="val">{selectedSale.product_name}</span>
-              </div>
-              <div className="r-item-row">
-                <span className="label">Payment Via</span>
-                <span className="val">
-                  {selectedSale.payment_method || "Not Specified"}
-                </span>
-              </div>
-              <div className="r-item-row">
-                <span className="label">Date</span>
-                <span className="val">
-                  {new Date(selectedSale.sale_date).toLocaleDateString()}
-                </span>
-              </div>
-
-              <div className="price-section">
-                <div className="r-item-row">
-                  <p>Total</p>
-                  <b>₦{Number(selectedSale.amount).toLocaleString()}</b>
-                </div>
-                <div className="r-item-row">
-                  <p>Paid</p>
-                  <b>₦{Number(selectedSale.amount_paid).toLocaleString()}</b>
-                </div>
-                <div className="divider"></div>
-                <p>Balance Due</p>
-                <h1 className="main-price">
-                  ₦{Number(selectedSale.debt_balance).toLocaleString()}
-                </h1>
-              </div>
-            </div>
-
-            <div className="receipt-footer">
-              <p className="thanks-msg">"Thank you for your patronage!"</p>
-              <div className="barcode-stub">
-                <span>
-                  G-LY-{selectedSale.id}-
-                  {(selectedSale.vendor_phone || "").slice(-3)}
-                </span>
-              </div>
-              <p className="power-by">Powered by Gainly Business Suite</p>
-            </div>
-            <div className="receipt-bottom-edge"></div>
-          </div>
-
-          <div className="receipt-actions">
+          {/* APPLE STYLE TOGGLE */}
+          <div className="format-toggle-container">
+            <div className={`toggle-slider ${format}`}></div>
             <button
-              className="cta-btn share-btn"
-              onClick={() => handleWhatsAppShare(selectedSale)}>
-              <FontAwesomeIcon icon={faShareNodes} /> Send to Customer
+              className={`toggle-btn ${format === "image" ? "active" : ""}`}
+              onClick={() => setFormat("image")}>
+              <FontAwesomeIcon icon={faImage} /> Digital Image
             </button>
             <button
-              className="back-to-list"
-              onClick={() => setSelectedSale(null)}>
-              Back to history
+              className={`toggle-btn ${format === "text" ? "active" : ""}`}
+              onClick={() => setFormat("text")}>
+              <FontAwesomeIcon icon={faFileLines} /> WhatsApp Text
             </button>
           </div>
+
+          {format === "image" ? (
+            <div className="image-receipt-wrapper">
+              <div className="receipt-card" ref={receiptRef}>
+                <div className="card-top-id">
+                  <span className="gainly-id-pill">G-LY-{selectedSale.id}</span>
+                  <div className="status-badge">
+                    <div className="dot"></div> Success
+                  </div>
+                </div>
+
+                <div className="card-header-centered">
+                  <div className="gainly-seal">G</div>
+                  <h2 className="vendor-name-premium">
+                    {user.bname || "Gainly Vendor"}
+                  </h2>
+                  <p className="receipt-date-stamp">
+                    {new Date(selectedSale.sale_date).toLocaleTimeString()} •{" "}
+                    {new Date(selectedSale.sale_date).toLocaleDateString()}
+                  </p>
+                </div>
+
+                <div className="card-amount-block">
+                  <span className="label-top">Transaction Amount</span>
+                  <h1 className="main-price-display">
+                    ₦{Number(selectedSale.amount).toLocaleString()}
+                  </h1>
+                </div>
+
+                <div className="receipt-details-list">
+                  <div className="detail-row">
+                    <span className="d-label">Customer</span>
+                    <span className="d-val">
+                      {selectedSale.customer_name || "Valued Customer"}
+                    </span>
+                  </div>
+                  <div className="detail-row">
+                    <span className="d-label">Product/Service</span>
+                    <span className="d-val">{selectedSale.product_name}</span>
+                  </div>
+                  <div className="detail-row">
+                    <span className="d-label">Payment Method</span>
+                    <span className="d-val">
+                      {selectedSale.payment_method || "Not Specified"}
+                    </span>
+                  </div>
+                  <div className="detail-row">
+                    <span className="d-label">Amount Paid</span>
+                    <span className="d-val">
+                      ₦{Number(selectedSale.amount_paid).toLocaleString()}
+                    </span>
+                  </div>
+
+                  {/* Dynamic Balance Row */}
+                  <div
+                    className={`detail-row balance-row ${Number(selectedSale.debt_balance) > 0 ? "has-debt" : ""}`}>
+                    <span className="d-label">Balance Due</span>
+                    <span className="d-val">
+                      ₦{Number(selectedSale.debt_balance).toLocaleString()}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="card-footer-secured">
+                  <div className="secured-tag">
+                    <FontAwesomeIcon
+                      icon={faShieldHalved}
+                      className="shield-icon"
+                    />
+                    <span>Secured by Gainly Business Suite</span>
+                  </div>
+                  <p className="copyright-tiny">
+                    Official Digital Proof of Purchase
+                  </p>
+                </div>
+              </div>
+
+              <div className="action-row">
+                <button
+                  className="apple-btn secondary"
+                  onClick={downloadReceipt}>
+                  <FontAwesomeIcon icon={faDownload} /> Save Image
+                </button>
+                <button
+                  className="apple-btn primary"
+                  onClick={() => handleWhatsAppShare(selectedSale)}>
+                  <FontAwesomeIcon icon={faShareNodes} /> Send WhatsApp
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="text-receipt-preview">
+              <div className="preview-box">
+                <p>
+                  Your receipt text is formatted and ready for WhatsApp. This
+                  format is tamper-resistant and easy for customers to read.
+                </p>
+              </div>
+              <button
+                className="apple-btn primary"
+                onClick={() => handleWhatsAppShare(selectedSale)}>
+                <FontAwesomeIcon icon={faShareNodes} /> Send Text Receipt
+              </button>
+            </div>
+          )}
+
+          <button className="back-link" onClick={() => setSelectedSale(null)}>
+            Close Receipt
+          </button>
         </div>
       ) : (
+        /* History List */
         <div className="history-list">
           {sales.length > 0 ? (
             sales.map((sale) => (
               <div
                 key={sale.id}
                 className="glass-card sale-item"
-                onClick={() => setSelectedSale(sale)}
-                style={{ border: "1px solid var(--text)" }}>
+                onClick={() => setSelectedSale(sale)}>
                 <div className="sale-info">
-                  <FontAwesomeIcon
-                    icon={faReceipt}
-                    className="blue"
-                    style={{ marginRight: "10px" }}
-                  />
+                  <div className="icon-wrap">
+                    <FontAwesomeIcon icon={faReceipt} />
+                  </div>
                   <div>
                     <h4>{sale.product_name}</h4>
-                    <p className="sale-date">
+                    <p>
                       {sale.customer_name} • ₦
                       {Number(sale.amount).toLocaleString()}
                     </p>
                   </div>
                 </div>
-                <FontAwesomeIcon icon={faShareNodes} style={{ opacity: 0.5 }} />
+                <FontAwesomeIcon icon={faChevronRight} className="chevron" />
               </div>
             ))
           ) : (
-            <div className="empty-state">
-              <p>No receipts found.</p>
-            </div>
+            <div className="empty-state">No receipts found.</div>
           )}
         </div>
       )}
     </div>
   );
 };
-
 export default Receipts;

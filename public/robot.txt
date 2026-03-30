@@ -1,3 +1,15 @@
 User-agent: *
+
 Allow: /
+Allow: /login
+Allow: /register
+
+
+Disallow: /insights
+Disallow: /sales
+Disallow: /expenses
+Disallow: /settings
+Disallow: /api/
+
+
 Sitemap: https://gainly.com.ng/sitemap.xml

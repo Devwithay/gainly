@@ -332,42 +332,40 @@ export default function Auth() {
       </div>
 
       <style>{`
-        .auth-input {
-          width: 100%;
-          padding: 14px;
-          border-radius: 12px;
-          border: 1px solid var(--border);
-          background: rgba(255,255,255,0.03);
-          color: var(--text);
-          margin-bottom: 12px;
-          outline: none;
-          transition: 0.3s;
-        }
-        .auth-input:focus { border-color: #7c3aed; background: rgba(124, 58, 237, 0.05); }
-        .eye-icon {
-          position: absolute; right: 12px; top: 12px;
-          background: transparent; border: none; color: var(--muted); cursor: pointer;
-        }
-        .niche-selector-container {
-          display: flex; flex-wrap: wrap; gap: 8px; max-height: 120px; 
-          overflow-y: auto; padding: 10px; border-radius: 12px;
-          background: rgba(0,0,0,0.1); border: 1px solid var(--border);
-        }
-        .niche-chip {
-          padding: 6px 12px; border-radius: 20px; fontSize: 11px;
-          border: 1px solid var(--border); background: transparent; color: var(--text);
-          cursor: pointer; transition: 0.3s;
-        }
-        .niche-chip.active { background: #7c3aed; border-color: #7c3aed; color: white; }
-        .error-banner {
-          background: rgba(239, 68, 68, 0.1); color: #ef4444; 
-          padding: 10px; border-radius: 8px; font-size: 13px; text-align: center; margin-bottom: 12px;
-        }
-        .toggle-auth-btn {
-          background: none; border: none; color: var(--muted); font-size: 14px; cursor: pointer;
-        }
-        .toggle-auth-btn:hover { color: #7c3aed; text-decoration: underline; }
-      `}</style>
+  .auth-input {
+    width: 100%;
+    padding: 16px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    outline: none;
+    transition: all 0.2s ease;
+  }
+  .auth-input:focus { 
+    border-color: var(--green) !important;
+    box-shadow: 0 0 0 4px var(--primary-glow);
+  }
+  .niche-selector-container {
+    display: flex; flex-wrap: wrap; gap: 8px; max-height: 160px; 
+    overflow-y: auto; padding: 12px; border-radius: 14px;
+    background: rgba(0,0,0,0.03); border: 1px solid var(--border);
+  }
+  [data-theme="dark"] .niche-selector-container {
+    background: rgba(255,255,255,0.03);
+  }
+  .niche-chip {
+    padding: 8px 16px; border-radius: 99px; font-size: 13px;
+    cursor: pointer; transition: 0.2s;
+  }
+  .error-banner {
+    background: rgba(239, 68, 68, 0.1); color: #ef4444; 
+    padding: 12px; border-radius: 10px; font-size: 13px; 
+    text-align: center; margin-bottom: 12px; border: 1px solid rgba(239, 68, 68, 0.2);
+  }
+  .toggle-auth-btn {
+    background: none; border: none; color: var(--muted); 
+    font-size: 14px; cursor: pointer; font-weight: 500;
+  }
+`}</style>
     </>
   );
 }

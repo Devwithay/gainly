@@ -8,10 +8,11 @@ import {
   faListCheck,
   faWallet,
   faReceipt,
+  faBriefcase,
   faFileExport,
   faFileLines,
-  faSearch,
-  faFilter,
+  faChartLine,
+  faCrown,
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
 import API_BASE_URL from "../../../apiConfig";
@@ -52,10 +53,7 @@ const SalesHub = () => {
           const data = JSON.parse(text);
           setHubStats(data);
         } catch (err) {
-          console.error(
-            "Server sent HTML instead of JSON. Look at this:",
-            text,
-          );
+          console.error("Server error:", text);
         }
       } catch (error) {
         console.error("Network error:", error);
@@ -68,6 +66,7 @@ const SalesHub = () => {
     const timer = setTimeout(() => setIsLoading(false), 1000);
     return () => clearTimeout(timer);
   }, []);
+
   const navigate = useNavigate();
   const handleExport = () => {
     window.location.href = `https://api.gainly.com.ng/export-csv.php?phone=${user.phone}`;
@@ -83,6 +82,7 @@ const SalesHub = () => {
         <p>Control center for your revenue</p>
       </header>
 
+      {/* Stats Grid */}
       <section className="stats-grid">
         {isLoading ? (
           <>
@@ -90,7 +90,7 @@ const SalesHub = () => {
             <StatSkeleton /> <StatSkeleton />
           </>
         ) : (
-          <section className="stats-grid">
+          <>
             <div className="stat-item glass-card">
               <span className="stat-label">Total Sales</span>
               <p className="stat-value">
@@ -116,14 +116,32 @@ const SalesHub = () => {
                 ₦{Number(hubStats.todaySales).toLocaleString()}
               </p>
             </div>
-          </section>
+          </>
         )}
       </section>
 
+      {!isLoading && Number(hubStats.totalSales) === 0 && (
+        <div className="empty-state-delight glass-card">
+          <div className="icon-box">
+            <FontAwesomeIcon icon={faBriefcase} className="empire-icon" />
+          </div>
+          <h3>Your empire starts here, Boss.</h3>
+          <p>Log your first sale to see the magic happen.</p>
+          <button
+            className="primary-add-btn small-btn"
+            onClick={() => navigate("/sales-hub/add-sale")}>
+            Get Started
+          </button>
+        </div>
+      )}
+
+      {/* Primary Action Button */}
       <button
         id="btn-add-sale"
         className="primary-add-btn"
         onClick={() => {
+          // Subtle Haptic Feedback for the button press
+          if ("vibrate" in navigator) navigator.vibrate(50);
           navigate("/sales-hub/add-sale");
         }}>
         <div className="btn-content">
@@ -138,6 +156,7 @@ const SalesHub = () => {
         <FontAwesomeIcon icon={faChevronRight} className="arrow-icon" />
       </button>
 
+      {/* Secondary Actions */}
       <section className="actions-grid">
         {isLoading ? (
           <>
@@ -183,17 +202,44 @@ const SalesHub = () => {
         )}
       </section>
 
+      {/* Roadmap / Coming Soon Section */}
       <section className="hub-section">
-        <h4 className="section-title">Sales Reports</h4>
-        <div className="glass-card report-preview">
+        <h4 className="section-title">Coming Soon</h4>
+
+        <div className="glass-card report-preview mb-12">
           <div className="report-info">
             <FontAwesomeIcon icon={faFileLines} className="report-icon" />
             <div>
-              <p className="main-p">Download-ready reports</p>
-              <p className="sub-p">Weekly, Monthly, & Yearly</p>
+              <p className="main-p">Sales Reports</p>
+              <p className="sub-p">Weekly, Monthly, & Yearly analytics</p>
             </div>
           </div>
-          <span className="status-tag">Coming Soon</span>
+          <span className="status-tag">Soon</span>
+        </div>
+
+        <div className="glass-card report-preview mb-12">
+          <div className="report-info">
+            <FontAwesomeIcon
+              icon={faChartLine}
+              className="report-icon green-glow"
+            />
+            <div>
+              <p className="main-p">Business Health Stories</p>
+              <p className="sub-p">Status-ready recaps of your growth</p>
+            </div>
+          </div>
+          <span className="status-tag">New</span>
+        </div>
+
+        <div className="glass-card report-preview">
+          <div className="report-info">
+            <FontAwesomeIcon icon={faCrown} className="report-icon gold-glow" />
+            <div>
+              <p className="main-p">Gainly CEO Points</p>
+              <p className="sub-p">Level up and earn rewards for tracking</p>
+            </div>
+          </div>
+          <span className="status-tag">Update</span>
         </div>
       </section>
     </div>

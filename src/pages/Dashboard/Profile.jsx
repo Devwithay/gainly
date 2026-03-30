@@ -564,9 +564,17 @@ const Profile = () => {
               <button
                 className="save-btn red-bg"
                 onClick={() => {
-                  logout();
+                  if (typeof logout === "function") {
+                    logout();
+                    navigate("/");
+                  } else {
+                    console.error(
+                      "Logout function is missing from AuthContext!",
+                    );
 
-                  navigate("/");
+                    localStorage.clear();
+                    window.location.href = "/";
+                  }
                 }}>
                 Yes
               </button>

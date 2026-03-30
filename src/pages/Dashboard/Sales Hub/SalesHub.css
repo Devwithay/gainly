@@ -222,3 +222,65 @@
   font-weight: 700;
   color: var(--text-muted);
 }
+.green-glow {
+  color: #10b981;
+  filter: drop-shadow(0 0 5px rgba(16, 185, 129, 0.4));
+}
+.gold-glow {
+  color: #f59e0b;
+  filter: drop-shadow(0 0 5px rgba(245, 158, 11, 0.4));
+}
+.mb-12 {
+  margin-bottom: 12px;
+}
+
+.empty-state-delight {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  margin: 20px 0;
+  border: 1px dashed var(--border); /* Dashed border looks like a "place to fill" */
+  background: var(--glass);
+}
+
+.empire-icon {
+  font-size: 50px;
+  color: var(--green);
+  margin-bottom: 20px;
+  filter: drop-shadow(0 10px 15px rgba(16, 185, 129, 0.3));
+  animation: float 3s ease-in-out infinite;
+}
+
+.empty-state-delight h3 {
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+.empty-state-delight p {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.cta-btn.small {
+  padding: 10px 24px;
+  font-size: 14px;
+  width: auto;
+}

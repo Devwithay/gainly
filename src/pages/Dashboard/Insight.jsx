@@ -1,6 +1,8 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import "./Insights.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+import { toPng } from "html-to-image";
 import {
   faArrowUp,
   faLightbulb,
@@ -8,6 +10,7 @@ import {
   faArrowDown,
   faBullseye,
   faCalendarAlt,
+  faShareNodes,
 } from "@fortawesome/free-solid-svg-icons";
 import API_BASE_URL from "../../apiConfig";
 import { AuthContext } from "../../Context Api/AuthContext";
@@ -17,8 +20,8 @@ const Insights = () => {
   const { user } = useContext(AuthContext);
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [timeRange, setTimeRange] = useState("30d"); // 7d, 30d, all
-
+  const [timeRange, setTimeRange] = useState("30d");
+  const [showQuietInfo, setShowQuietInfo] = useState(false);
   useEffect(() => {
     const getInsights = async () => {
       setLoading(true);
@@ -45,7 +48,34 @@ const Insights = () => {
     };
 
     if (user?.phone) getInsights();
-  }, [user?.phone, timeRange]); // Re-run when timeRange changes
+  }, [user?.phone, timeRange]);
+
+  const shareAreaRef = useRef(null);
+  const [showShare, setShowShare] = useState(false);
+
+  const handleShare = async () => {
+    if (shareAreaRef.current === null) return;
+    try {
+      const dataUrl = await toPng(shareAreaRef.current, {
+        cacheBust: true,
+        pixelRatio: 2,
+      });
+      const link = document.createElement("a");
+      link.download = `Gainly-Flex-${new Date().getTime()}.png`;
+      link.href = dataUrl;
+      link.click();
+      setShowShare(false);
+    } catch (err) {
+      console.error("Share failed", err);
+    }
+  };
+
+  const totalCustomers = data?.retentionData?.length || 0;
+  const topCustomer = data?.retentionData?.[0]?.customer_name || "New Legend";
+  const atRiskAmount =
+    data?.retentionData
+      ?.filter((c) => c.days_ago >= 30)
+      .reduce((sum, c) => sum + Number(c.total_spent), 0) || 0;
 
   if (loading || !data)
     return <LoadingScreen message="Calculating your growth..." />;
@@ -78,13 +108,21 @@ const Insights = () => {
             Status:{" "}
             <span
               className="status-tag"
-              style={{ backgroundColor: status.color }}>
+              style={{
+                backgroundColor: `${status.color}20`,
+                color: status.color,
+                padding: "4px 12px",
+                borderRadius: "12px",
+                fontSize: "0.85rem",
+                fontWeight: "700",
+              }}>
               {status.label}
             </span>
           </p>
         </div>
-
-        {/* HIGH-END TIME SELECTOR */}
+        <button className="share-btn" onClick={() => setShowShare(true)}>
+          <FontAwesomeIcon icon={faShareNodes} /> Flex
+        </button>
         <div className="time-selector">
           <select
             value={timeRange}
@@ -95,8 +133,7 @@ const Insights = () => {
           </select>
         </div>
       </header>
-
-      {/* Goal Card - Dynamically aligns with Revenue */}
+      Zz{" "}
       <section className="glass-card goal-card">
         <div className="goal-header">
           <span>
@@ -117,7 +154,6 @@ const Insights = () => {
           <span>Target: ₦{currentTarget.toLocaleString()}</span>
         </div>
       </section>
-
       {/* Main Stats Grid */}
       <div className="metrics-grid">
         <div className="glass-card mini-metric">
@@ -139,8 +175,6 @@ const Insights = () => {
           </div>
         </div>
       </div>
-
-      {/* Dynamic Niche Index */}
       <section className="niche-war-room">
         <h3 className="section-title">Niche Profitability Index</h3>
         <div className="niche-grid">
@@ -175,7 +209,6 @@ const Insights = () => {
           })}
         </div>
       </section>
-
       {/* Chart Section */}
       <section className="glass-card chart-card">
         <h3>Revenue Trend (7D)</h3>
@@ -194,69 +227,128 @@ const Insights = () => {
           ))}
         </div>
       </section>
-
-      <section
-        className="glass-card retention-section"
-        style={{ marginTop: "2rem" }}>
+      <section className="glass-card goldmine-section">
         <div className="section-header-flex">
-          <h3 className="section-title">Retention & CLV Engine</h3>
-          <span className="ai-badge">Goldmine AI</span>
+          <h3>Customer Goldmine</h3>
+          <span className="ai-badge">Real-time AI</span>
         </div>
-
-        <p className="retention-subtitle">
-          Top 5 Customers & Re-engagement Status
+        <p className="goldmine-subtitle">
+          We found ₦{atRiskAmount.toLocaleString()} sitting in "quiet"
+          customers.
+          <span
+            className="learn-more-link"
+            onClick={() => setShowQuietInfo(true)}>
+            {" "}
+            Learn More
+          </span>
         </p>
-
+        {showQuietInfo && (
+          <div
+            className="info-modal-overlay"
+            onClick={() => setShowQuietInfo(false)}>
+            <div
+              className="info-modal-content"
+              onClick={(e) => e.stopPropagation()}>
+              <div className="info-modal-icon">🤫</div>
+              <h3>What are "Quiet" Customers?</h3>
+              <p>
+                These are customers who used to buy from you but haven't spent a
+                kobo in over <strong>30 days</strong>.
+              </p>
+              <div className="advice-box">
+                <strong>💡 Lead's Advice:</strong>
+                <p>
+                  Don't let them forget you! Tap "Win Back" to send a quick
+                  WhatsApp discount. It’s 5x cheaper to keep an old customer
+                  than to find a new one.
+                </p>
+              </div>
+              <button
+                className="understood-btn"
+                onClick={() => setShowQuietInfo(false)}>
+                Understood
+              </button>
+            </div>
+          </div>
+        )}
         <div className="retention-list">
-          {data.retentionData && data.retentionData.length > 0 ? (
-            data.retentionData.map((cust, idx) => {
-              const isChurned = cust.days_ago >= 30;
-
-              return (
-                <div key={idx} className="retention-item">
-                  <div className="cust-main-info">
-                    <div className="cust-avatar">
-                      {cust.customer_name.charAt(0).toUpperCase()}
-                    </div>
-                    <div className="cust-details">
-                      <p className="cust-name">{cust.customer_name}</p>
-                      <p className="cust-clv">
-                        Lifetime: ₦{Number(cust.total_spent).toLocaleString()}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="retention-actions">
-                    {isChurned ? (
-                      <div className="churn-box">
-                        <span className="churn-alert">
-                          ⚠️ Churned ({cust.days_ago} days)
-                        </span>
-                        <button
-                          className="wa-automation-btn"
-                          onClick={() => {
-                            const msg = `Hi ${cust.customer_name}, we noticed you haven't shopped with ${user.businessName || "us"} in a while! Here is a special 5% discount just for you.`;
-                            window.open(
-                              `https://wa.me/${cust.customer_phone}?text=${encodeURIComponent(msg)}`,
-                            );
-                          }}>
-                          Send 5% Discount
-                        </button>
-                      </div>
-                    ) : (
-                      <span className="status-active">✨ Active</span>
-                    )}
-                  </div>
+          {data.retentionData.slice(0, 5).map((cust, idx) => (
+            <div key={idx} className="goldmine-item">
+              <div className="cust-info">
+                <div className="cust-avatar">
+                  {cust.customer_name.charAt(0)}
                 </div>
-              );
-            })
-          ) : (
-            <p className="empty-text">
-              Start logging sales to see your Top Customers here.
-            </p>
-          )}
+                <div>
+                  <p className="cust-name">
+                    {cust.customer_name} {idx === 0 && "🏆"}
+                  </p>
+                  <p className="cust-clv">
+                    Spent ₦{Number(cust.total_spent).toLocaleString()}
+                  </p>
+                </div>
+              </div>
+              <div className="cust-status">
+                {cust.days_ago >= 30 ? (
+                  <button
+                    className="winback-btn"
+                    onClick={() => {
+                      /* your whatsapp logic */
+                    }}>
+                    Win Back
+                  </button>
+                ) : (
+                  <span className="active-pill">Loyal</span>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
       </section>
+      {/* 3. THE SHARE MODAL (Put this at the very end of your JSX, before the closing </div>) */}
+      {showShare && (
+        <div className="share-overlay">
+          <div className="share-modal">
+            <div className="share-capture-area" ref={shareAreaRef}>
+              <div className="flex-card">
+                <div className="flex-logo">GAINLY</div>
+                <div className="flex-header">
+                  <p>BUSINESS STATUS</p>
+                  <h2>Absolute Boss</h2>
+                </div>
+                <div className="flex-stats-grid">
+                  <div className="flex-stat">
+                    <label>Revenue Logged</label>
+                    <p>₦{revenue.toLocaleString()}</p>
+                  </div>
+                  <div className="flex-stat">
+                    <label>Net Profit</label>
+                    <p>₦{netProfit.toLocaleString()}</p>
+                  </div>
+                  <div className="flex-stat">
+                    <label>Top Customer</label>
+                    <p>{topCustomer}</p>
+                  </div>
+                  <div className="flex-stat">
+                    <label>Customer Base</label>
+                    <p>{totalCustomers} Active</p>
+                  </div>
+                </div>
+                <div className="flex-footer">
+                  <p>Tracking growth on Gainly. ✨</p>
+                </div>
+              </div>
+            </div>
+            <div className="modal-buttons">
+              <button className="download-btn" onClick={handleShare}>
+                Save Image
+              </button>
+              <button className="close-btn" onClick={() => setShowShare(false)}>
+                Not Now
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

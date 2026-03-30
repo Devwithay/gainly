@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import API_BASE_URL from "../apiConfig";
 import LoadingScreen from "../components/LoadingScreen";
+import { LogOut } from "lucide-react";
 
 export const AuthContext = createContext();
 
@@ -179,6 +180,16 @@ export const AuthProvider = ({ children }) => {
     );
   };
 
+  const logout = useCallback(() => {
+    setUser(null);
+    setOnboardingStep(0);
+    setHasExpenses(null);
+  }, []);
+
+  const updateUser = useCallback((newData) => {
+    setUser((prev) => (prev ? { ...prev, ...newData } : null));
+  }, []);
+
   return (
     <AuthContext.Provider
       value={{
@@ -186,8 +197,9 @@ export const AuthProvider = ({ children }) => {
         login,
         isRunningInPWA,
         loading,
-
         onboardingStep,
+        logout,
+        updateUser,
         completeStep,
         triggerAndroidInstall,
         hasExpenses,
