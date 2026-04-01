@@ -1,11 +1,12 @@
 .add-sale-page {
   padding: 15px;
-  background: var(--bg); /* Uses your app's theme background */
-  color: var(--text); /* Uses your app's theme text color */
+  background: var(--bg); 
+  color: var(--text); 
+  
   min-height: 100vh;
 }
 
-/* 2. Styled Back Button */
+
 .icon-btn-back {
   width: 40px;
   height: 40px;
@@ -112,8 +113,8 @@
 }
 
 .type-pill-toggle button.active {
-  background: var(--primary);
-  color: white !important;
+  background: green;
+  color: var(--text) !important;
   opacity: 1;
   box-shadow: 0 4px 15px rgba(124, 77, 255, 0.3);
 }
@@ -153,7 +154,7 @@
   margin: 0;
 }
 
-/* Success state animations */
+
 .success-icon-glow {
   font-size: 4rem;
   color: #22c55e;
