@@ -267,7 +267,13 @@ const Profile = () => {
 
           {user?.profilePic ? (
             <img
-              src={`${API_BASE_URL.replace("/api", "")}/${user.profilePic}`}
+              src={
+                user?.profilePic
+                  ? user.profilePic.startsWith("http")
+                    ? user.profilePic
+                    : `https://gainly.com.ng/${user.profilePic}`
+                  : "/default-avatar.png"
+              }
               className="avatar-img"
               alt="Avatar"
             />

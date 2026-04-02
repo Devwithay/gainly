@@ -124,19 +124,26 @@ export const AuthProvider = ({ children }) => {
       const response = await fetch(`${API_BASE_URL}/verify-vendor.php`, {
         method: "POST",
         body: formData,
-        credentials: "include",
+        credentials: "include", // Essential for sessions
       });
 
       const data = await response.json();
 
       if (data.status === "success") {
-        setOnboardingStep(data.onboarding_step);
-        await fetchUserProfile(data.phone);
-        return true;
+        // 1. Set the step immediately from the login response
+        setOnboardingStep(parseInt(data.onboarding_step) || 0);
+
+        // 2. WAIT 500ms for the browser to lock in the Session Cookie
+        await new Promise((resolve) => setTimeout(resolve, 500));
+
+        // 3. Now fetch the profile
+        const profile = await fetchUserProfile(data.phone || phone);
+
+        return !!profile; // Only return true if profile fetch worked
       }
       return false;
     } catch (error) {
-      console.error("Login failed:", error);
+      console.error("Login critical failure:", error);
       return false;
     }
   };
