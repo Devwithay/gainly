@@ -88,19 +88,12 @@ export default function Auth() {
   };
 
   const handleSignUp = async () => {
+    console.log("!!! SIGNUP CLICKED !!!"); // Outside try-catch
     setErrorMsg("");
-    if (
-      !firstName ||
-      !number ||
-      !password ||
-      !businessName ||
-      selectedNiches.length === 0
-    ) {
-      setErrorMsg("Please fill in all fields and select a category.");
-      return;
-    }
     setIsLoading(true);
+
     try {
+      console.log("Data to send:", { firstName, businessName, number });
       const result = await register(
         firstName,
         businessName,
@@ -110,44 +103,42 @@ export default function Auth() {
       );
 
       if (result === "success") {
-        handleRememberMe(number, password);
         const success = await login(number, password);
         if (success) window.location.href = "/dashboard";
       } else {
-        setErrorMsg(result || "Could not create account.");
+        setErrorMsg(result);
       }
     } catch (err) {
-      setErrorMsg("Server error. Check connection.");
+      console.error("ACTUAL ERROR:", err); // If this doesn't show, check browser extensions
+      setErrorMsg("System Error: " + err.message);
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleLogin = async () => {
-    setErrorMsg("");
+    console.log("Check before Login:", { number, password });
+
     if (!number || !password) {
-      setErrorMsg("Please provide Phone number and password.");
+      setErrorMsg("Please enter both phone and password");
       return;
     }
+
     setIsLoading(true);
     try {
       const success = await login(number, password);
       if (success) {
         handleRememberMe(number, password);
-        // USE THIS INSTEAD OF WINDOW.LOCATION FOR A SEC
         navigate("/dashboard");
       } else {
-        setErrorMsg("Invalid phone number or password.");
+        setErrorMsg("Invalid credentials");
       }
     } catch (err) {
-      // This is where your "Server error" message is coming from
-      console.log(err);
-      setErrorMsg("Connection failed. Try again.");
+      setErrorMsg("Connection failed.");
     } finally {
       setIsLoading(false);
     }
   };
-
   // const handleForgotPassword = () => {
   //   const contactCeo = window.confirm(
   //     "Forgot Password? For security, password resets are handled manually by the Gainly Team. Contact support now?",
