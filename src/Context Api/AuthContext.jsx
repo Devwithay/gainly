@@ -33,10 +33,13 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const fetchUserProfile = useCallback(async (phone) => {
+    if (!phone) return null;
     try {
       const response = await fetch(
         `${API_BASE_URL}/fetch-profile.php?phone=${phone}`,
       );
+      if (!response.ok) throw new Error("Server down");
+
       const data = await response.json();
 
       if (isMounted.current && !data.error) {

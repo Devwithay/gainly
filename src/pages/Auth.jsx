@@ -134,12 +134,15 @@ export default function Auth() {
       const success = await login(number, password);
       if (success) {
         handleRememberMe(number, password);
-        window.location.href = "/dashboard";
+        // USE THIS INSTEAD OF WINDOW.LOCATION FOR A SEC
+        navigate("/dashboard");
       } else {
         setErrorMsg("Invalid phone number or password.");
       }
     } catch (err) {
-      setErrorMsg("Connection failed. Is the server running?");
+      // This is where your "Server error" message is coming from
+      console.log(err);
+      setErrorMsg("Connection failed. Try again.");
     } finally {
       setIsLoading(false);
     }
