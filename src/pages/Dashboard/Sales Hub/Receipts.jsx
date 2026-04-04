@@ -8,6 +8,7 @@ import {
   faShareNodes,
   faDownload,
   faFileLines,
+  faCircleNotch,
   faShieldHalved,
   faChevronRight,
   faImage,
@@ -25,6 +26,7 @@ const Receipts = () => {
   const [selectedSale, setSelectedSale] = useState(null);
   const [loading, setLoading] = useState(true);
   const [format, setFormat] = useState("image");
+  const [isSharing, setIsSharing] = useState(false);
   const receiptRef = useRef(null);
 
   useEffect(() => {
@@ -54,6 +56,8 @@ const Receipts = () => {
   };
 
   const handleWhatsAppShare = async (sale) => {
+    if (isSharing) return;
+    setIsSharing(true);
     if (format === "image" && receiptRef.current) {
       try {
         const html2canvas = (await import("html2canvas")).default;
@@ -78,12 +82,13 @@ const Receipts = () => {
             );
           }
         }, "image/png");
-
-        if (onboardingStep === 6) completeStep(6);
-        return;
       } catch (error) {
         console.error("Error sharing image:", error);
+      } finally {
+        setIsSharing(false);
+        if (onboardingStep === 6) completeStep(6);
       }
+      return;
     }
 
     const businessName = user.bname || "Our Store";
@@ -231,9 +236,21 @@ const Receipts = () => {
                   <FontAwesomeIcon icon={faDownload} /> Save Image
                 </button>
                 <button
-                  className="apple-btn primary"
-                  onClick={() => handleWhatsAppShare(selectedSale)}>
-                  <FontAwesomeIcon icon={faShareNodes} /> Send WhatsApp
+                  className={`apple-btn primary ${isSharing ? "loading" : ""}`}
+                  onClick={() => handleWhatsAppShare(selectedSale)}
+                  disabled={isSharing}>
+                  {isSharing ? (
+                    <>
+                      <FontAwesomeIcon icon={faCircleNotch} spin /> Preparing...
+                    </>
+                  ) : (
+                    <>
+                      <FontAwesomeIcon icon={faShareNodes} />{" "}
+                      {format === "image"
+                        ? "Send WhatsApp"
+                        : "Send Text Receipt"}
+                    </>
+                  )}
                 </button>
               </div>
             </div>
