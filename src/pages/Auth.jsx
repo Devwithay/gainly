@@ -88,33 +88,69 @@ export default function Auth() {
   };
 
   const handleSignUp = async () => {
-    console.log("!!! SIGNUP CLICKED !!!"); // Outside try-catch
     setErrorMsg("");
-    setIsLoading(true);
 
+    // 1. Name Validation (Regex: Letters and spaces only, min 3 chars)
+    const nameRegex = /^[a-zA-Z\s]{3,}$/;
+    if (!nameRegex.test(firstName.trim())) {
+      return setErrorMsg("Please input a real name (no numbers or symbols).");
+    }
+
+    // 2. Business Name (Simple non-empty check)
+    if (businessName.trim().length < 2) {
+      return setErrorMsg("Please enter a valid business name.");
+    }
+
+    // 3. Phone Number (Min 10 digits, numbers only)
+    const cleanPhone = number.trim();
+    if (cleanPhone.length < 10 || isNaN(cleanPhone)) {
+      return setErrorMsg("Please enter a valid phone number.");
+    }
+
+    // 4. Password Strength Check
+    const strength = getPasswordStrength(); // Using the helper from my previous reply
+    if (strength.label === "Weak" || strength.label === "") {
+      return setErrorMsg("Password too weak. Please make it longer.");
+    }
+
+    // 5. Category Check
+    if (selectedNiches.length === 0) {
+      return setErrorMsg("Please select at least one category.");
+    }
+
+    setIsLoading(true);
     try {
-      console.log("Data to send:", { firstName, businessName, number });
       const result = await register(
-        firstName,
-        businessName,
+        firstName.trim(),
+        businessName.trim(),
         JSON.stringify(selectedNiches),
-        number,
+        cleanPhone,
         password,
       );
 
       if (result === "success") {
-        const success = await login(number, password);
+        const success = await login(cleanPhone, password);
         if (success) window.location.href = "/dashboard";
       } else {
         setErrorMsg(result);
       }
     } catch (err) {
-      console.error("ACTUAL ERROR:", err); // If this doesn't show, check browser extensions
       setErrorMsg("System Error: " + err.message);
     } finally {
       setIsLoading(false);
     }
   };
+
+  const getPasswordStrength = () => {
+    if (password.length === 0) return { width: "0%", color: "#ccc", label: "" };
+    if (password.length < 6)
+      return { width: "33%", color: "#ff4d4d", label: "Weak" };
+    if (password.length < 10)
+      return { width: "66%", color: "#ffcc00", label: "Medium" };
+    return { width: "100%", color: "#27ae60", label: "Strong" };
+  };
+
+  const strength = getPasswordStrength();
 
   const handleLogin = async () => {
     console.log("Check before Login:", { number, password });
@@ -241,6 +277,35 @@ export default function Auth() {
               placeholder="Password"
               style={{ paddingRight: 48 }}
             />
+            {/* Put this directly under your Password Input */}
+            <div style={{ marginTop: "8px", marginBottom: "15px" }}>
+              <div
+                style={{
+                  height: "6px",
+                  width: "100%",
+                  backgroundColor: "#e0e0e0",
+                  borderRadius: "10px",
+                  overflow: "hidden",
+                }}>
+                <div
+                  style={{
+                    height: "100%",
+                    width: strength.width,
+                    backgroundColor: strength.color,
+                    transition: "width 0.3s ease-in-out",
+                  }}></div>
+              </div>
+              <span
+                style={{
+                  fontSize: "12px",
+                  color: strength.color,
+                  fontWeight: "bold",
+                  marginTop: "4px",
+                  display: "block",
+                }}>
+                {strength.label}
+              </span>
+            </div>
             <button
               type="button"
               className="eye-icon"

@@ -219,17 +219,33 @@ const CaptainGainly = () => {
         {auth.onboardingStep === 1 && (
           <div className="install-logic">
             {!platform ? (
-              <div style={{ display: "flex", gap: "10px", marginTop: "15px" }}>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "10px",
+                  marginTop: "15px",
+                }}>
+                <div style={{ display: "flex", gap: "10px" }}>
+                  <button
+                    className="onboarding-btn"
+                    onClick={() => setPlatform("android")}>
+                    Android
+                  </button>
+                  <button
+                    className="onboarding-btn"
+                    style={{ background: "#333" }}
+                    onClick={() => setPlatform("ios")}>
+                    iPhone
+                  </button>
+                </div>
+
+                {/* NEW SKIP BUTTON */}
                 <button
-                  className="onboarding-btn"
-                  onClick={() => setPlatform("android")}>
-                  Android
-                </button>
-                <button
-                  className="onboarding-btn"
-                  style={{ background: "#333" }}
-                  onClick={() => setPlatform("ios")}>
-                  iPhone
+                  className="skip-link"
+                  style={{ marginTop: "5px", opacity: 0.8 }}
+                  onClick={() => auth.completeStep(1)}>
+                  I'll install it later, continue tutorial
                 </button>
               </div>
             ) : (
@@ -243,8 +259,8 @@ const CaptainGainly = () => {
                   <>
                     <p>
                       1. Tap <strong>Share</strong>{" "}
-                      <FontAwesomeIcon icon={faShareFromSquare} /> icon at the
-                      bottom of Safari
+                      <FontAwesomeIcon icon={faShareFromSquare} /> at the bottom
+                      of Safari
                     </p>
                     <p>
                       2. Tap <strong>Add to Home Screen</strong>{" "}
@@ -252,14 +268,30 @@ const CaptainGainly = () => {
                     </p>
                   </>
                 )}
-                <button
-                  className="onboarding-btn"
-                  onClick={() => {
-                    if (platform === "android") auth.triggerAndroidInstall();
-                    auth.completeStep(1);
+
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "10px",
                   }}>
-                  {platform === "android" ? "Install Gainly" : "I've done that"}
-                </button>
+                  <button
+                    className="onboarding-btn"
+                    onClick={() => {
+                      if (platform === "android") auth.triggerAndroidInstall();
+                      auth.completeStep(1);
+                    }}>
+                    {platform === "android"
+                      ? "Install Gainly"
+                      : "I've done that"}
+                  </button>
+
+                  <button
+                    className="skip-link"
+                    onClick={() => setPlatform(null)}>
+                    Go back
+                  </button>
+                </div>
               </div>
             )}
           </div>

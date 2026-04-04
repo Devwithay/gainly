@@ -9,7 +9,6 @@ import {
   faUserAstronaut,
   faWallet,
   faTag,
-  faLightbulb,
 } from "@fortawesome/free-solid-svg-icons";
 import API_BASE_URL from "../../../apiConfig";
 import "./AddSale.css";
@@ -40,18 +39,20 @@ const AddSale = ({ trackAction }) => {
     return parseFloat(clean);
   };
 
+  const isFormValid = product.trim().length > 0 && normalize(totalAmount) > 0;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!isFormValid) return;
+
     if ("vibrate" in navigator) {
       navigator.vibrate([100, 50, 100]);
     }
-    const finalTotal = normalize(totalAmount);
-    if (!product || !finalTotal) {
-      alert("Product name and price are required!");
-      return;
-    }
 
     setIsSubmitting(true);
+    const finalTotal = normalize(totalAmount);
+
     const formData = new FormData();
     formData.append("phone", user.phone);
     formData.append("product", product);
@@ -69,10 +70,14 @@ const AddSale = ({ trackAction }) => {
         body: formData,
       });
       const result = await response.text();
+
       if (result.trim() === "success") {
         if (trackAction) trackAction("logged_a_sale");
         if (onboardingStep === 3) completeStep(3);
+
+        setIsSubmitting(false);
         setSuccess(true);
+
         setTimeout(() => navigate("/sales-hub"), 1500);
       } else {
         alert("Error: " + result);
@@ -84,6 +89,7 @@ const AddSale = ({ trackAction }) => {
     }
   };
 
+  // Render logic priority
   if (isSubmitting) return <LoadingScreen message="Recording your profit..." />;
 
   return (
@@ -98,16 +104,26 @@ const AddSale = ({ trackAction }) => {
 
       <div className="add-sale-content">
         {success ? (
-          <div className="success-overlay">
+          /* THIS WILL NOW SHOW PROPERLY */
+          <div
+            className="success-overlay"
+            style={{ textAlign: "center", padding: "50px 20px" }}>
             <FontAwesomeIcon
               icon={faCheckCircle}
               className="success-icon-glow"
+              style={{
+                fontSize: "80px",
+                color: "#27ae60",
+                marginBottom: "20px",
+              }}
             />
-            <h2>Sale Logged!</h2>
+            <h2 style={{ fontSize: "24px", fontWeight: "bold" }}>
+              Sale Logged!
+            </h2>
+            <p>Your business is growing, CEO! 🚀</p>
           </div>
         ) : (
           <form className="gainly-form" onSubmit={handleSubmit}>
-            {/* BUSINESS SELECTION */}
             <section className="form-card highlight">
               <div className="input-box">
                 <label>
@@ -144,7 +160,7 @@ const AddSale = ({ trackAction }) => {
               </div>
 
               <div className="input-box">
-                <label>Product / Service Name</label>
+                <label>Product / Service Name*</label>
                 <input
                   type="text"
                   placeholder="e.g. Wig Installation"
@@ -156,7 +172,7 @@ const AddSale = ({ trackAction }) => {
 
               <div className="grid-2">
                 <div className="input-box">
-                  <label>Total Price (₦)</label>
+                  <label>Total Price (₦)*</label>
                   <input
                     type="text"
                     placeholder="50k"
@@ -176,7 +192,6 @@ const AddSale = ({ trackAction }) => {
                 </div>
               </div>
             </section>
-
             <section className="form-card secondary">
               <div className="input-box">
                 <label>Cost Price (Optional)</label>
@@ -218,7 +233,14 @@ const AddSale = ({ trackAction }) => {
               </div>
             </section>
 
-            <button type="submit" className="gainly-submit-btn">
+            <button
+              type="submit"
+              className={`gainly-submit-btn ${!isFormValid ? "disabled-btn" : ""}`}
+              disabled={!isFormValid}
+              style={{
+                opacity: isFormValid ? 1 : 0.5,
+                cursor: isFormValid ? "pointer" : "not-allowed",
+              }}>
               <FontAwesomeIcon icon={faCirclePlus} /> Log Sale
             </button>
           </form>

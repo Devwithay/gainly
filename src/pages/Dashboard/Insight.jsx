@@ -22,33 +22,55 @@ const Insights = () => {
   const [loading, setLoading] = useState(true);
   const [timeRange, setTimeRange] = useState("30d");
   const [showQuietInfo, setShowQuietInfo] = useState(false);
+  const [customDate, setCustomDate] = useState({ start: "", end: "" });
+  const [error, setError] = useState(null);
+
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
   useEffect(() => {
     const getInsights = async () => {
-      setLoading(true);
-      try {
-        const [resStats, resRetention] = await Promise.all([
-          fetch(
-            `${API_BASE_URL}/fetch-insights-data.php?phone=${user.phone}&range=${timeRange}`,
-          ),
-          fetch(`${API_BASE_URL}/fetch-retention.php?phone=${user.phone}`),
-        ]);
+      const isCustomReady =
+        timeRange === "custom" && customDate.start && customDate.end;
+      const isStandardRange = timeRange !== "custom";
 
-        const stats = await resStats.json();
-        const retention = await resRetention.json();
+      if (isStandardRange || isCustomReady) {
+        // If we already have data, show the subtle refresher, otherwise full screen
+        if (data) setIsRefreshing(true);
+        else setLoading(true);
 
-        setData({
-          ...stats,
-          retentionData: Array.isArray(retention) ? retention : [],
-        });
-      } catch (err) {
-        console.error("Insight Fetch Error:", err);
-      } finally {
-        setLoading(false);
+        setError(null);
+
+        let url = `${API_BASE_URL}/fetch-insights-data.php?phone=${user.phone}&range=${timeRange}`;
+        if (timeRange === "custom") {
+          url += `&start=${customDate.start}&end=${customDate.end}`;
+        }
+
+        try {
+          const [resStats, resRetention] = await Promise.all([
+            fetch(url),
+            fetch(`${API_BASE_URL}/fetch-retention.php?phone=${user.phone}`),
+          ]);
+
+          if (!resStats.ok) throw new Error("Server Error");
+
+          const stats = await resStats.json();
+          const retention = await resRetention.json();
+
+          setData({
+            ...stats,
+            retentionData: Array.isArray(retention) ? retention : [],
+          });
+        } catch (err) {
+          setError("Failed to sync data.");
+          console.error(err);
+        } finally {
+          setLoading(false);
+          setIsRefreshing(false);
+        }
       }
     };
-
     if (user?.phone) getInsights();
-  }, [user?.phone, timeRange]);
+  }, [user?.phone, timeRange, customDate.start, customDate.end]);
 
   const shareAreaRef = useRef(null);
   const [showShare, setShowShare] = useState(false);
@@ -77,8 +99,8 @@ const Insights = () => {
       ?.filter((c) => c.days_ago >= 30)
       .reduce((sum, c) => sum + Number(c.total_spent), 0) || 0;
 
-  if (loading || !data)
-    return <LoadingScreen message="Calculating your growth..." />;
+  if (loading && !data)
+    return <LoadingScreen message="Calculating growth..." />;
 
   const revenue = Number(data?.revenue || 0);
   const netProfit = Number(data?.netProfit || 0);
@@ -93,6 +115,7 @@ const Insights = () => {
     return { label: "Bootstrapping", color: "#f59e0b" };
   };
 
+  const InlineSpinner = () => <div className="inline-spinner"></div>;
   const status = getStatus(netProfit);
   const chartValues = Array.isArray(data?.chartData)
     ? data.chartData
@@ -100,40 +123,57 @@ const Insights = () => {
   const nicheList = Array.isArray(data?.nicheData) ? data.nicheData : [];
 
   return (
-    <div className="insights-container">
+    <div className={`insights-container ${isRefreshing ? "data-syncing" : ""}`}>
+      {error && <div className="error-toast">{error}</div>}
+
+      {/* Subtle syncing bar so the user knows it's working without the UI disappearing */}
+      {isRefreshing && <div className="sync-loader"></div>}
+
       <header className="insights-header">
-        <div>
-          <h1>Performance</h1>
-          <p>
-            Status:{" "}
-            <span
-              className="status-tag"
-              style={{
-                backgroundColor: `${status.color}20`,
-                color: status.color,
-                padding: "4px 12px",
-                borderRadius: "12px",
-                fontSize: "0.85rem",
-                fontWeight: "700",
-              }}>
-              {status.label}
-            </span>
-          </p>
-        </div>
-        <button className="share-btn" onClick={() => setShowShare(true)}>
-          <FontAwesomeIcon icon={faShareNodes} /> Flex
-        </button>
-        <div className="time-selector">
-          <select
-            value={timeRange}
-            onChange={(e) => setTimeRange(e.target.value)}>
-            <option value="7d">Past 7 Days</option>
-            <option value="30d">This Month</option>
-            <option value="all">All Time</option>
-          </select>
+        <h1>Performance</h1>
+        <div className="filter-container">
+          <label className="time-selector-wrapper">
+            <FontAwesomeIcon icon={faCalendarAlt} className="cal-icon" />
+            <select
+              value={timeRange}
+              onChange={(e) => setTimeRange(e.target.value)}>
+              <option value="7d">Past 7 Days</option>
+              <option value="30d">This Month</option>
+              <option value="all">All Time</option>
+              <option value="custom">Custom Range</option>
+            </select>
+            <span className="dropdown-arrow">▾</span>
+          </label>
+
+          {timeRange === "custom" && (
+            <div className="premium-date-picker">
+              <div className="date-input-group">
+                <input
+                  type="date"
+                  value={customDate.start}
+                  onChange={(e) =>
+                    setCustomDate((prev) => ({
+                      ...prev,
+                      start: e.target.value,
+                    }))
+                  }
+                />
+                <div className="date-sep">to</div>
+                <input
+                  type="date"
+                  value={customDate.end}
+                  onChange={(e) =>
+                    setCustomDate((prev) => ({ ...prev, end: e.target.value }))
+                  }
+                />
+
+                {isRefreshing && <InlineSpinner />}
+              </div>
+            </div>
+          )}
         </div>
       </header>
-      Zz{" "}
+
       <section className="glass-card goal-card">
         <div className="goal-header">
           <span>
@@ -304,37 +344,37 @@ const Insights = () => {
           ))}
         </div>
       </section>
-      {/* 3. THE SHARE MODAL (Put this at the very end of your JSX, before the closing </div>) */}
+
       {showShare && (
         <div className="share-overlay">
           <div className="share-modal">
             <div className="share-capture-area" ref={shareAreaRef}>
-              <div className="flex-card">
-                <div className="flex-logo">GAINLY</div>
-                <div className="flex-header">
-                  <p>BUSINESS STATUS</p>
-                  <h2>Absolute Boss</h2>
-                </div>
-                <div className="flex-stats-grid">
-                  <div className="flex-stat">
-                    <label>Revenue Logged</label>
-                    <p>₦{revenue.toLocaleString()}</p>
+              <div className="flex-card-glass" ref={shareAreaRef}>
+                <div className="glass-inner">
+                  <div className="flex-logo">
+                    GAINLY <span className="logo-dot">.</span>
                   </div>
-                  <div className="flex-stat">
-                    <label>Net Profit</label>
-                    <p>₦{netProfit.toLocaleString()}</p>
+
+                  <div className="flex-main-content">
+                    <p className="flex-label">BUSINESS STATUS</p>
+                    <h2 className="flex-status-text">{status.label}</h2>
+                    <div className="flex-divider"></div>
+
+                    <div className="flex-stats-grid">
+                      <div className="flex-stat-item">
+                        <label>Revenue</label>
+                        <p>₦{revenue.toLocaleString()}</p>
+                      </div>
+                      <div className="flex-stat-item">
+                        <label>Net Profit</label>
+                        <p>₦{netProfit.toLocaleString()}</p>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex-stat">
-                    <label>Top Customer</label>
-                    <p>{topCustomer}</p>
+
+                  <div className="flex-footer-glass">
+                    <p>Verified on Gainly Business Hub</p>
                   </div>
-                  <div className="flex-stat">
-                    <label>Customer Base</label>
-                    <p>{totalCustomers} Active</p>
-                  </div>
-                </div>
-                <div className="flex-footer">
-                  <p>Tracking growth on Gainly. ✨</p>
                 </div>
               </div>
             </div>
