@@ -135,19 +135,43 @@ const Insights = () => {
     : [0, 0, 0, 0, 0, 0, 0];
   const nicheList = Array.isArray(data?.nicheData) ? data.nicheData : [];
 
+  const getDynamicLabels = () => {
+    const days = ["S", "M", "T", "W", "T", "F", "S"];
+    let endDate = new Date();
+
+    if (timeRange === "custom" && customDate.end) {
+      endDate = new Date(customDate.end);
+    }
+
+    return Array.from({ length: 7 }, (_, i) => {
+      const d = new Date(endDate);
+      d.setDate(endDate.getDate() - (6 - i));
+      return days[d.getDay()];
+    });
+  };
+
+  const dynamicLabels = getDynamicLabels();
+
   return (
     <div className={`insights-container ${isRefreshing ? "data-syncing" : ""}`}>
-      {error && <div className="error-toast">{error}</div>}
+      <div className="insights-liquid-bg">
+        <div className="blob blob-blue"></div>
+        <div className="blob blob-purple"></div>
+        <div className="blob blob-cyan"></div>
+      </div>
 
+      {error && <div className="error-toast">{error}</div>}
       {isRefreshing && <div className="sync-loader"></div>}
 
       <header className="insights-header">
-        <h1>Performance</h1>
+        <h1 className="premium-title">Performance</h1>
         <div
           className={`floating-flex-btn ${revenue === 0 ? "disabled" : ""}`}
           onClick={() => revenue > 0 && setShowShare(true)}>
           <FontAwesomeIcon icon={revenue > 0 ? faShareNodes : faBullseye} />
-          <span>{revenue > 0 ? "Flex" : "Goal"}</span>
+          <span className="expandable-text">
+            {revenue > 0 ? "Flex" : "Goal"}
+          </span>
         </div>
         <div className="filter-container">
           <label className="time-selector-wrapper">
@@ -267,11 +291,10 @@ const Insights = () => {
           })}
         </div>
       </section>
-
       <section className="glass-card chart-card">
         <h3>Revenue Trend (7D)</h3>
         <div className="visual-chart">
-          {chartValues.map((val, i) => (
+          {chartValues.slice(0, 7).map((val, i) => (
             <div key={i} className="bar-container">
               <div
                 className="bar"
@@ -279,8 +302,13 @@ const Insights = () => {
                   height: `${(val / (Math.max(...chartValues, 1) || 1)) * 100}%`,
                   backgroundColor:
                     val > 0 ? "#7c3aed" : "rgba(255,255,255,0.1)",
-                }}></div>
-              <span>{["M", "T", "W", "T", "F", "S", "S"][i]}</span>
+                }}>
+                {val > 0 && (
+                  <span className="bar-tooltip">₦{val.toLocaleString()}</span>
+                )}
+              </div>
+
+              <span className="day-label">{dynamicLabels[i]}</span>
             </div>
           ))}
         </div>

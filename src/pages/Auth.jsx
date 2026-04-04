@@ -8,6 +8,9 @@ import {
   faMoon,
   faSun,
   faEyeSlash,
+  faPhone,
+  faStore,
+  faUser,
   faSpinner,
   faLock,
 } from "@fortawesome/free-solid-svg-icons";
@@ -175,18 +178,15 @@ export default function Auth() {
       setIsLoading(false);
     }
   };
-  // const handleForgotPassword = () => {
-  //   const contactCeo = window.confirm(
-  //     "Forgot Password? For security, password resets are handled manually by the Gainly Team. Contact support now?",
-  //   );
-  //   if (contactCeo) {
-  //     window.location.href =
-  //       "https://wa.me/2347030318983?text=Hi%20Gainly%20Support,%20I%20forgot%20my%20password.";
-  //   }
-  // };
 
   return (
-    <>
+    <div className="auth-container" data-theme={theme}>
+      {/* Ambient Background for the Liquid Glass effect */}
+      <div className="ambient-scene">
+        <div className="blob-blue"></div>
+        <div className="blob-green"></div>
+      </div>
+
       <button
         className="theme-toggle"
         onClick={() => setTheme(theme === "light" ? "dark" : "light")}
@@ -194,237 +194,161 @@ export default function Auth() {
         <FontAwesomeIcon icon={theme === "light" ? faMoon : faSun} />
       </button>
 
-      <div
-        className="auth-wrapper"
-        style={{
-          minHeight: "100vh",
-          display: "grid",
-          placeItems: "center",
-          padding: 20,
-          background: "var(--bg)",
-        }}>
-        <div
-          className="modal-card glass"
-          style={{ maxWidth: 420, width: "100%" }}>
-          <div style={{ textAlign: "center", marginBottom: 8 }}>
+      <div className="gainly-container">
+        <div className="glass-liquid">
+          <div className="auth-header">
             <div className="logo-glow">Gainly</div>
-            <h2 style={{ marginTop: 8 }}>
+            <h2 className="auth-title">
               {isSignUp ? "Create account" : "Welcome Back, CEO"}
             </h2>
-            <p style={{ color: "var(--muted)", fontSize: 14 }}>
+            <p className="auth-subtitle">
               {isSignUp
                 ? "Join thousands of vendors managing sales."
                 : "Sign in to manage your business."}
             </p>
           </div>
 
-          {isSignUp && (
-            <>
-              <input
-                type="text"
-                className="auth-input"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                placeholder="Full Name"
-              />
-              <input
-                type="text"
-                className="auth-input"
-                value={businessName}
-                onChange={(e) => setBusinessName(e.target.value)}
-                placeholder="Business name (e.g. Your Store)"
-              />
-              <div style={{ marginBottom: 12 }}>
-                <label
-                  style={{
-                    fontSize: 12,
-                    color: "var(--muted)",
-                    display: "block",
-                    marginBottom: 8,
-                    fontWeight: 600,
-                  }}>
-                  BUSINESS CATEGORY (MAX 3)
-                </label>
-                <div className="niche-selector-container">
-                  {categoriesList.map((niche) => (
-                    <button
-                      key={niche}
-                      type="button"
-                      onClick={() => toggleNiche(niche)}
-                      className={`niche-chip ${selectedNiches.includes(niche) ? "active" : ""}`}>
-                      {niche}
-                    </button>
-                  ))}
+          <div className="form-content">
+            {isSignUp && (
+              <>
+                <div className="input-group">
+                  <FontAwesomeIcon icon={faUser} className="icon" />
+                  <input
+                    type="text"
+                    className="auth-input"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    placeholder="Full Name"
+                  />
                 </div>
-              </div>
-            </>
-          )}
+                <div className="input-group">
+                  <FontAwesomeIcon icon={faStore} className="icon" />
+                  <input
+                    type="text"
+                    className="auth-input"
+                    value={businessName}
+                    onChange={(e) => setBusinessName(e.target.value)}
+                    placeholder="Business name (e.g. Your Store)"
+                  />
+                </div>
+                <div style={{ marginBottom: 12 }}>
+                  <label className="section-label">
+                    BUSINESS CATEGORY (MAX 3)
+                  </label>
+                  <div className="niche-selector-container">
+                    {categoriesList.map((niche) => (
+                      <button
+                        key={niche}
+                        type="button"
+                        onClick={() => toggleNiche(niche)}
+                        className={`niche-chip ${selectedNiches.includes(niche) ? "active" : ""}`}>
+                        {niche}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </>
+            )}
 
-          <input
-            className="auth-input"
-            value={number}
-            onChange={(e) => setNumber(e.target.value)}
-            placeholder="Phone Number"
-            type="number"
-          />
+            <div className="input-group">
+              <FontAwesomeIcon icon={faPhone} className="icon" />
+              <input
+                className="auth-input"
+                value={number}
+                onChange={(e) => setNumber(e.target.value)}
+                placeholder="Phone Number"
+                type="tel"
+              />
+            </div>
 
-          <div style={{ position: "relative" }}>
-            <input
-              type={showPassword ? "text" : "password"}
-              className="auth-input"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Password"
-              style={{ paddingRight: 48 }}
-            />
-            {/* Put this directly under your Password Input */}
-            <div style={{ marginTop: "8px", marginBottom: "15px" }}>
-              <div
-                style={{
-                  height: "6px",
-                  width: "100%",
-                  backgroundColor: "#e0e0e0",
-                  borderRadius: "10px",
-                  overflow: "hidden",
-                }}>
+            <div className="input-group">
+              <FontAwesomeIcon icon={faLock} className="icon" />
+              <input
+                type={showPassword ? "text" : "password"}
+                className="auth-input"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Password"
+              />
+              <button
+                type="button"
+                className="eye-icon-btn"
+                onClick={() => setShowPassword((s) => !s)}>
+                <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+              </button>
+            </div>
+
+            {/* Password Strength Meter */}
+            <div className="strength-meter">
+              <div className="meter-bg">
                 <div
+                  className="meter-fill"
                   style={{
-                    height: "100%",
                     width: strength.width,
                     backgroundColor: strength.color,
-                    transition: "width 0.3s ease-in-out",
                   }}></div>
               </div>
-              <span
-                style={{
-                  fontSize: "12px",
-                  color: strength.color,
-                  fontWeight: "bold",
-                  marginTop: "4px",
-                  display: "block",
-                }}>
+              <span className="strength-text" style={{ color: strength.color }}>
                 {strength.label}
               </span>
             </div>
-            <button
-              type="button"
-              className="eye-icon"
-              onClick={() => setShowPassword((s) => !s)}>
-              <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
-            </button>
-          </div>
 
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginTop: 5,
-              padding: "0 4px",
-            }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <input
-                id="remember"
-                type="checkbox"
-                checked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
-                style={{ width: 16, height: 16, cursor: "pointer" }}
-              />
-              <label
-                htmlFor="remember"
-                style={{
-                  cursor: "pointer",
-                  fontSize: 13,
-                  color: "var(--text)",
-                }}>
-                Remember me
+            <div className="auth-options">
+              <label className="remember-box">
+                <input
+                  id="remember"
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                />
+                <span>Remember me</span>
               </label>
+
+              {!isSignUp && (
+                <Link
+                  to="/forgot-password"
+                  style={{
+                    fontSize: 13,
+                    fontWeight: 600,
+                    color: "var(--primary-color)",
+                  }}>
+                  Forgot Password?
+                </Link>
+              )}
             </div>
 
-            {!isSignUp && (
-              <Link
-                to="/forgot-password"
-                style={{
-                  background: "none",
-                  border: "none",
-                  color: "#7c3aed",
-                  fontSize: 13,
-                  fontWeight: 600,
-                  cursor: "pointer",
+            <div style={{ marginTop: 20 }}>
+              {errorMsg && <div className="error-banner">{errorMsg}</div>}
+
+              <button
+                className="primary-btn"
+                onClick={isSignUp ? handleSignUp : handleLogin}
+                disabled={isLoading}>
+                {isLoading ? (
+                  <FontAwesomeIcon icon={faSpinner} spin />
+                ) : isSignUp ? (
+                  "Create Account"
+                ) : (
+                  "Sign In"
+                )}
+              </button>
+            </div>
+
+            <div style={{ marginTop: 20, textAlign: "center" }}>
+              <button
+                className="toggle-auth-btn"
+                onClick={() => {
+                  setIsSignUp((s) => !s);
+                  setErrorMsg("");
                 }}>
-                Forgot Password?
-              </Link>
-            )}
-          </div>
-
-          <div style={{ marginTop: 20 }}>
-            {errorMsg && <div className="error-banner">{errorMsg}</div>}
-
-            <button
-              className="cta-btn"
-              onClick={isSignUp ? handleSignUp : handleLogin}
-              style={{ width: "100%", height: 50, fontSize: 16 }}
-              disabled={isLoading}>
-              {isLoading ? (
-                <FontAwesomeIcon icon={faSpinner} spin />
-              ) : isSignUp ? (
-                "Create Account"
-              ) : (
-                "Sign In"
-              )}
-            </button>
-          </div>
-
-          <div style={{ marginTop: 20, textAlign: "center" }}>
-            <button
-              className="toggle-auth-btn"
-              onClick={() => {
-                setIsSignUp((s) => !s);
-                setErrorMsg("");
-              }}>
-              {isSignUp
-                ? "Already have an account? Sign In"
-                : "New to Gainly? Create Account"}
-            </button>
+                {isSignUp
+                  ? "Already have an account? Sign In"
+                  : "New to Gainly? Create Account"}
+              </button>
+            </div>
           </div>
         </div>
       </div>
-
-      <style>{`
-  .auth-input {
-    width: 100%;
-    padding: 16px;
-    border-radius: 12px;
-    margin-bottom: 12px;
-    outline: none;
-    transition: all 0.2s ease;
-  }
-  .auth-input:focus { 
-    border-color: var(--green) !important;
-    box-shadow: 0 0 0 4px var(--primary-glow);
-  }
-  .niche-selector-container {
-    display: flex; flex-wrap: wrap; gap: 8px; max-height: 160px; 
-    overflow-y: auto; padding: 12px; border-radius: 14px;
-    background: rgba(0,0,0,0.03); border: 1px solid var(--border);
-  }
-  [data-theme="dark"] .niche-selector-container {
-    background: rgba(255,255,255,0.03);
-  }
-  .niche-chip {
-    padding: 8px 16px; border-radius: 99px; font-size: 13px;
-    cursor: pointer; transition: 0.2s;
-  }
-  .error-banner {
-    background: rgba(239, 68, 68, 0.1); color: #ef4444; 
-    padding: 12px; border-radius: 10px; font-size: 13px; 
-    text-align: center; margin-bottom: 12px; border: 1px solid rgba(239, 68, 68, 0.2);
-  }
-  .toggle-auth-btn {
-    background: none; border: none; color: var(--muted); 
-    font-size: 14px; cursor: pointer; font-weight: 500;
-  }
-`}</style>
-    </>
+    </div>
   );
 }

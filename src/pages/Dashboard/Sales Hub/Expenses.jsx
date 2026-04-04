@@ -6,6 +6,7 @@ import {
   faChevronLeft,
   faSpinner,
   faTrashCan,
+  faReceipt,
 } from "@fortawesome/free-solid-svg-icons";
 import API_BASE_URL from "../../../apiConfig";
 
@@ -55,63 +56,72 @@ const Expenses = () => {
 
   return (
     <div className="expenses-container">
-      <div className="blob blob-orange"></div>
+      <div className="blob-orange"></div>
 
-      <header className="page-header">
-        <button className="back-btn" onClick={() => navigate(-1)}>
-          <FontAwesomeIcon icon={faChevronLeft} />
-        </button>
-        <h1>Log Expense</h1>
-      </header>
-
-      <div className="glass-card expense-card">
-        <form onSubmit={handleLogExpense}>
-          <div className="form-group">
-            <label>What did you pay for?</label>
-            <input
-              type="text"
-              placeholder="e.g. Delivery to Ikeja"
-              value={item}
-              onChange={(e) => setItem(e.target.value)}
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Amount (Shortcuts allowed: 2k, 10k)</label>
-            <input
-              type="text"
-              placeholder="₦ 0.00"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Category</label>
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}>
-              <option>Delivery</option>
-              <option>Transport</option>
-              <option>Marketing</option>
-              <option>Data</option>
-              <option>Other bills</option>
-            </select>
-          </div>
-
-          <button
-            type="submit"
-            className="cta-btn expense-btn"
-            disabled={isSubmitting}>
-            {isSubmitting ? (
-              <FontAwesomeIcon icon={faSpinner} spin />
-            ) : (
-              "Log Expense"
-            )}
+      <div className="expenses-content-wrapper">
+        <header className="page-header">
+          <button className="back-btn" onClick={() => navigate(-1)}>
+            <FontAwesomeIcon icon={faChevronLeft} />
           </button>
-        </form>
+          <h1 className="premium-title">Log Expense</h1>
+        </header>
+
+        <div className="glass-card expense-card liquid-variant">
+          <form onSubmit={handleLogExpense}>
+            <div className="form-group">
+              <label>What did you pay for?</label>
+              <input
+                type="text"
+                placeholder="e.g. Delivery to Ikeja"
+                value={item}
+                onChange={(e) => setItem(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Amount (Shortcuts allowed: 2k, 10k)</label>
+              <input
+                type="text"
+                placeholder="₦ 0.00"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Category</label>
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}>
+                <option>Delivery</option>
+                <option>Transport</option>
+                <option>Marketing</option>
+                <option>Data</option>
+                <option>Miscellaneous</option>
+                <option>Other bills</option>
+              </select>
+            </div>
+
+            <button
+              type="submit"
+              className="expense-btn"
+              disabled={isSubmitting}>
+              {isSubmitting ? (
+                <FontAwesomeIcon icon={faSpinner} spin />
+              ) : (
+                <>
+                  <FontAwesomeIcon
+                    icon={faReceipt}
+                    style={{ marginRight: "8px" }}
+                  />
+                  Log Expense
+                </>
+              )}
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );

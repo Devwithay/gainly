@@ -201,7 +201,7 @@ const CaptainGainly = () => {
       )}
 
       <div
-        className={`captain-card ${coords ? "card-elevated" : ""} ${isTargetAtTop ? "card-at-bottom" : ""}`}>
+        className={`captain-card glass-liquid ${coords ? "card-elevated" : ""} ${isTargetAtTop ? "card-at-bottom" : ""}`}>
         <div className="ai-icon-wrapper">
           <FontAwesomeIcon icon={faRobot} />
         </div>

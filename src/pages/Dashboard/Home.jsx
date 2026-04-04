@@ -34,7 +34,7 @@ const getGreeting = () => {
 };
 
 function Home({ trackAction }) {
-  const [showAiPopup, setShowAiPopup] = useState(false); // New Apple-style popup state
+  const [showAiPopup, setShowAiPopup] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -130,7 +130,11 @@ function Home({ trackAction }) {
       <div className="blob blob-1"></div>
       <div className="blob blob-2"></div>
 
-      {/* APPLE-STYLE "COMING SOON" POPUP */}
+      <div className="ambient-scene">
+        <div className="blob blob-purple"></div>
+        <div className="blob blob-blue"></div>
+      </div>
+
       {showAiPopup && (
         <div
           className="apple-popup-overlay"

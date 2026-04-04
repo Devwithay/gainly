@@ -1,45 +1,63 @@
 .bottom-nav {
   position: fixed;
-  bottom: 20px;
+  bottom: 25px;
   left: 50%;
   transform: translateX(-50%);
-  width: 90%;
-  max-width: 400px;
-  height: 65px;
-  background: rgba(18, 18, 18, 0.85);
-  -webkit-backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
+  width: 92%;
+  max-width: 420px;
+  height: 70px;
+
+  /* Liquid Glass Core */
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow:
+    var(--glass-inner-glow),
+    0 15px 35px rgba(0, 0, 0, 0.2);
+  border-radius: 24px;
+
   display: flex;
   justify-content: space-around;
   align-items: center;
   z-index: 1000;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-  padding: 0 10px;
+  padding: 0 15px;
 }
 
 .nav-item {
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--muted);
   text-decoration: none;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  transition: all 0.3s ease;
+  gap: 5px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   flex: 1;
+  position: relative;
 }
 
-.nav-item:hover,
 .nav-item.active {
-  color: #7c3aed;
-  transform: translateY(-2px);
+  color: var(--primary-color);
+  transform: translateY(-5px);
+}
+
+/* The "Active Indicator" dot from your reference image */
+.nav-item.active::after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  width: 5px;
+  height: 5px;
+  background: var(--primary-color);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--primary-color);
 }
 
 .nav-item span {
-  font-size: 10px;
-  font-weight: 500;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
 }
-
 body {
   padding-bottom: 100px;
 }
