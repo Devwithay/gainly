@@ -61,7 +61,7 @@ const ExpenseHistory = ({ trackAction }) => {
       </div>
       <div className="history-list">
         {loading ? (
-          <LoadingScreen />
+          <LoadingScreen message="Categorizing your spending..." />
         ) : expenses.length > 0 ? (
           expenses.map((exp) => (
             <div

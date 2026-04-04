@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useRef } from "react";
+import React, { useState, useContext, useEffect, useRef, useMemo } from "react";
 import "./Insights.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -10,6 +10,7 @@ import {
   faArrowDown,
   faBullseye,
   faCalendarAlt,
+  faShareAlt,
   faShareNodes,
 } from "@fortawesome/free-solid-svg-icons";
 import API_BASE_URL from "../../apiConfig";
@@ -94,10 +95,13 @@ const Insights = () => {
 
   const totalCustomers = data?.retentionData?.length || 0;
   const topCustomer = data?.retentionData?.[0]?.customer_name || "New Legend";
-  const atRiskAmount =
-    data?.retentionData
-      ?.filter((c) => c.days_ago >= 30)
-      .reduce((sum, c) => sum + Number(c.total_spent), 0) || 0;
+  const atRiskAmount = useMemo(() => {
+    return (
+      data?.retentionData
+        ?.filter((c) => c.days_ago >= 30)
+        .reduce((sum, c) => sum + Number(c.total_spent), 0) || 0
+    );
+  }, [data?.retentionData]);
 
   if (loading && !data)
     return <LoadingScreen message="Calculating growth..." />;
@@ -126,11 +130,11 @@ const Insights = () => {
     <div className={`insights-container ${isRefreshing ? "data-syncing" : ""}`}>
       {error && <div className="error-toast">{error}</div>}
 
-      {/* Subtle syncing bar so the user knows it's working without the UI disappearing */}
       {isRefreshing && <div className="sync-loader"></div>}
 
       <header className="insights-header">
         <h1>Performance</h1>
+
         <div className="filter-container">
           <label className="time-selector-wrapper">
             <FontAwesomeIcon icon={faCalendarAlt} className="cal-icon" />
@@ -249,7 +253,20 @@ const Insights = () => {
           })}
         </div>
       </section>
-      {/* Chart Section */}
+      <div className="floating-flex-btn">
+        <FontAwesomeIcon icon={faShareAlt} className="cal-icon" />
+        <button
+          style={{
+            background: "transparent",
+            border: "none",
+            fontWeight: "bolder",
+            fontSize: "1rem",
+          }}
+          onClick={() => setShowShare(true)}>
+          Flex
+        </button>
+      </div>
+
       <section className="glass-card chart-card">
         <h3>Revenue Trend (7D)</h3>
         <div className="visual-chart">
@@ -329,11 +346,7 @@ const Insights = () => {
               </div>
               <div className="cust-status">
                 {cust.days_ago >= 30 ? (
-                  <button
-                    className="winback-btn"
-                    onClick={() => {
-                      /* your whatsapp logic */
-                    }}>
+                  <button className="winback-btn" onClick={() => {}}>
                     Win Back
                   </button>
                 ) : (
@@ -349,7 +362,7 @@ const Insights = () => {
         <div className="share-overlay">
           <div className="share-modal">
             <div className="share-capture-area" ref={shareAreaRef}>
-              <div className="flex-card-glass" ref={shareAreaRef}>
+              <div className="flex-card-glass">
                 <div className="glass-inner">
                   <div className="flex-logo">
                     GAINLY <span className="logo-dot">.</span>

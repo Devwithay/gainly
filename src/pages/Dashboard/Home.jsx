@@ -2,7 +2,7 @@ import { useState, useEffect, useContext, Suspense } from "react";
 import "./Home.css";
 import { AuthContext } from "../../Context Api/AuthContext";
 import API_BASE_URL from "../../apiConfig";
-import { AiContext } from "../../Context Api/AiContext";
+// import { AiContext } from "../../Context Api/AiContext"; // AI Context Commented
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faClock,
@@ -10,13 +10,10 @@ import {
   faBell,
   faMagicWandSparkles,
   faXmark,
+  faRocket,
 } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router";
-import {
-  KNOWLEDGE_BASE,
-  detectIntent,
-  generateResponse,
-} from "../../components/ai/ai";
+// import { KNOWLEDGE_BASE, detectIntent, generateResponse } from "../../components/ai/ai"; // AI Logic Commented
 import LoadingScreen from "../../components/LoadingScreen";
 
 const CardSkeleton = () => (
@@ -37,17 +34,10 @@ const getGreeting = () => {
 };
 
 function Home({ trackAction }) {
-  const [isAiOpen, setIsAiOpen] = useState(false);
+  const [showAiPopup, setShowAiPopup] = useState(false); // New Apple-style popup state
   const [isLoading, setIsLoading] = useState(true);
-  const [randomTips, setRandomTips] = useState([]);
-  const [activeResponse, setActiveResponse] = useState("");
-  const [displayedText, setDisplayedText] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
-  const [customQuery, setCustomQuery] = useState("");
-
-  const { saveSnippet } = useContext(AiContext);
 
   const [stats, setStats] = useState({
     todayTotal: 0,
@@ -87,207 +77,99 @@ function Home({ trackAction }) {
     });
   };
 
-  useEffect(() => {
-    if (isAiOpen) {
-      const shuffled = [...KNOWLEDGE_BASE].sort(() => 0.5 - Math.random());
-      setRandomTips(shuffled.slice(0, 3));
-      setActiveResponse("");
-      setDisplayedText("");
-    }
-  }, [isAiOpen]);
-
-  useEffect(() => {
-    if (activeResponse && isTyping) {
-      let index = 0;
-      setDisplayedText("");
-      const interval = setInterval(() => {
-        setDisplayedText((prev) => prev + (activeResponse[index] || ""));
-        index++;
-        if (index >= activeResponse.length) {
-          clearInterval(interval);
-          setIsTyping(false);
-        }
-      }, 18);
-      return () => clearInterval(interval);
-    }
-  }, [activeResponse, isTyping]);
-
-  const handleAskAi = async (itemOrQuery) => {
-    let finalQuery = "";
-    if (typeof itemOrQuery === "object" && itemOrQuery.q) {
-      finalQuery = itemOrQuery.q;
-    } else {
-      finalQuery = String(itemOrQuery || customQuery || "").trim();
-    }
-
-    if (!finalQuery) return;
-
-    setIsTyping(true);
-    setDisplayedText("");
-    setActiveResponse("");
-
-    const financeKeywords = ["profit", "sales", "revenue", "made", "debt"];
-    const isFinanceQuery = financeKeywords.some((word) =>
-      finalQuery.toLowerCase().includes(word),
-    );
-
-    if (isFinanceQuery) {
-      try {
-        const res = await fetch(
-          `${API_BASE_URL}/ai-query.php?phone=${user.phone}&q=${encodeURIComponent(finalQuery)}`,
-        );
-        const data = await res.json();
-        if (data.response) {
-          setActiveResponse(data.response);
-          setCustomQuery("");
-          return;
-        }
-      } catch (err) {
-        console.error("Backend AI Error:", err);
-      }
-    }
-
-    const response = generateResponse({
-      query: finalQuery,
-      user: user,
-      stats: stats,
-    });
-
-    setActiveResponse(response);
-    setCustomQuery("");
-  };
-
-  const getGoldenStrategy = () => {
-    if (stats.unpaidTotal > 50000) {
+  // --- DYNAMIC ADVICE BANK LOGIC ---
+  const getDynamicAdvice = () => {
+    // 1. Debt Priority
+    if (stats.unpaidTotal > 20000) {
       return {
-        title: "Debt Recovery Mode",
-        subtitle: "Cash is trapped!",
-        advice: `You have ₦${stats.unpaidTotal.toLocaleString()} in unpaid orders. Ask AI for a "Polite Debt Reminder" now.`,
+        title: "Revenue Recovery",
+        subtitle: "Cash is trapped in debt!",
+        advice: `You have ₦${Number(stats.unpaidTotal).toLocaleString()} outside. Send friendly reminders to your customers today to boost your cash flow.`,
         icon: "💸",
-        actionColor: "#ef4444",
+        tag: "High Priority",
       };
     }
 
-    if (stats.topProductCount > 10) {
+    // 2. High Volume / Success
+    if (stats.todayCount >= 5) {
       return {
-        title: "Stock Velocity Alert",
-        subtitle: `${stats.topProductName} is flying!`,
-        advice: `You've sold this ${stats.topProductCount} times. Consider a 'Bundle Deal' with a slow-moving item to clear space.`,
-        icon: "📦",
-        actionColor: "#8b5cf6",
+        title: "Momentum Alert",
+        subtitle: "You're on a roll today!",
+        advice: `5+ orders today! Post a 'Thank You' note on your WhatsApp status. Social proof drives even more sales.`,
+        icon: "🔥",
+        tag: "Growth",
       };
     }
 
+    // 3. Top Product Insight
+    if (stats.topProductCount > 0) {
+      return {
+        title: "Inventory Insight",
+        subtitle: `${stats.topProductName} is a winner`,
+        advice: `This is your best seller. Try creating a 'Limited Time Offer' or bundle it with a slower item to clear stock.`,
+        icon: "👑",
+        tag: "Strategy",
+      };
+    }
+
+    // 4. General/Default Advice
     return {
-      title: "Market Expansion",
-      subtitle: `Steady growth in ${user?.category}`,
+      title: "Market Visibility",
+      subtitle: "Keep the engine running",
       advice:
-        "Post a behind-the-scenes video. People buy from people, not just stores.",
+        "Consistent posting wins. Share a 'Behind the scenes' clip of you working. Customers buy from people they trust.",
       icon: "✨",
-      actionColor: "#22c55e",
+      tag: "Daily Tip",
     };
   };
 
-  const strategy = getGoldenStrategy();
+  const strategy = getDynamicAdvice();
 
   return (
-    <main className={`dashboard-container ${isAiOpen ? "modal-open" : ""}`}>
+    <main className="dashboard-container">
       <div className="blob blob-1"></div>
       <div className="blob blob-2"></div>
 
-      <Suspense fallback={<LoadingScreen />}>
+      {/* APPLE-STYLE "COMING SOON" POPUP */}
+      {showAiPopup && (
         <div
-          className={`drawer-overlay ${isAiOpen ? "active" : ""}`}
-          onClick={() => setIsAiOpen(false)}>
+          className="apple-popup-overlay"
+          onClick={() => setShowAiPopup(false)}>
           <div
-            className={`ai-drawer ${isAiOpen ? "slide-up" : ""}`}
+            className="apple-popup-card animate-pop"
             onClick={(e) => e.stopPropagation()}>
-            <div className="drawer-handle"></div>
-            <div className="drawer-header">
-              <h3>
-                <FontAwesomeIcon
-                  icon={faMagicWandSparkles}
-                  className="ai-icon-purple"
-                />{" "}
-                Marketing Expert
-              </h3>
-              <button className="close-btn" onClick={() => setIsAiOpen(false)}>
-                <FontAwesomeIcon icon={faXmark} />
-              </button>
+            <div className="popup-icon-wrap">
+              <FontAwesomeIcon icon={faRocket} className="rocket-icon" />
             </div>
-
-            <div className="drawer-content">
-              {activeResponse ? (
-                <div className="ai-response-area">
-                  <div className="ai-text-bubble">
-                    {displayedText}
-                    {isTyping && <span className="typing-cursor">|</span>}
-                  </div>
-                  <div className="ai-response-actions">
-                    {!isTyping && (
-                      <>
-                        <button
-                          className="back-to-tips"
-                          onClick={() => setActiveResponse("")}>
-                          Ask something else
-                        </button>
-                        <button
-                          type="button"
-                          className="save-snippet-btn"
-                          onClick={() => {
-                            if (activeResponse) {
-                              saveSnippet(activeResponse);
-                              if (trackAction) trackAction("saved_snippet");
-                            }
-                          }}>
-                          Save Snippet
-                        </button>
-                      </>
-                    )}
-                  </div>
-                </div>
-              ) : (
-                <>
-                  <p className="ai-intro">
-                    How can I help you scale today,{" "}
-                    {user?.fullname?.split(" ")[0]}?
-                  </p>
-                  <form
-                    className="ai-input-form"
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      handleAskAi(customQuery);
-                    }}>
-                    <input
-                      type="text"
-                      placeholder={`Ask about your ${user?.category || "business"}...`}
-                      value={customQuery}
-                      onChange={(e) => setCustomQuery(e.target.value)}
-                    />
-                    <button type="submit" className="send-query-btn">
-                      <FontAwesomeIcon icon={faMagicWandSparkles} />
-                    </button>
-                  </form>
-                  <div className="ai-suggestions">
-                    {randomTips.map((item, index) => (
-                      <button key={index} onClick={() => handleAskAi(item)}>
-                        {item.q}
-                      </button>
-                    ))}
-                  </div>
-                </>
-              )}
-            </div>
+            <h2>Coming Soon</h2>
+            <p>
+              Our <b>AI Marketing Expert</b> is currently in training to help
+              you scale {user?.bname || "your business"} to the moon.
+            </p>
+            <button
+              className="popup-close-btn"
+              onClick={() => setShowAiPopup(false)}>
+              Got it
+            </button>
           </div>
         </div>
-      </Suspense>
+      )}
+
+      {/* AI DRAWER COMMENTED OUT 
+      <Suspense fallback={<LoadingScreen message="Assembling briefing..." />}>
+          ... previous AI code ...
+      </Suspense> 
+      */}
 
       <header className="header">
         <h1>
           {getGreeting()}, {user?.fullname?.split(" ")[0] || "CEO"}!
         </h1>
         <div className="header-actions">
-          <button className="icon-btn ai-btn" onClick={() => setIsAiOpen(true)}>
+          {/* Triggers the "Coming Soon" Popup instead of the Drawer */}
+          <button
+            className="icon-btn ai-btn"
+            onClick={() => setShowAiPopup(true)}>
             <FontAwesomeIcon icon={faMagicWandSparkles} />
           </button>
           <button
@@ -319,27 +201,22 @@ function Home({ trackAction }) {
               </div>
             </div>
 
-            <div className="glass-card">
-              <div className="strategy-badge">
-                <span className="strategy-icon">{strategy.icon}</span>
-                <p className="card-label">CEO STRATEGY</p>
+            {/* DYNAMIC STRATEGY CARD (No Button) */}
+            <div className="glass-card strategy-card-v2">
+              <div className="strategy-header">
+                <div className="strategy-badge-v2">
+                  <span className="s-icon">{strategy.icon}</span>
+                  <span className="s-tag">{strategy.tag}</span>
+                </div>
               </div>
               <h2 className="card-main-title">{strategy.title}</h2>
               <p className="strategy-subtitle">{strategy.subtitle}</p>
-              <div className="strategy-advice-box">
+              <div className="dynamic-advice-content">
                 <p>"{strategy.advice}"</p>
               </div>
-
-              <button
-                className="strategy-action-btn cta-btn"
-                onClick={() =>
-                  strategy.title.includes("Debt")
-                    ? navigate("/sales-hub/debt-list")
-                    : setIsAiOpen(true)
-                }>
-                Execute Strategy
-              </button>
+              {/* Removed Execute Strategy Button as requested */}
             </div>
+
             <div className="glass-card top-product-golden">
               <div className="crown-icon">👑</div>
               <p className="card-label">Top Product (All Time)</p>

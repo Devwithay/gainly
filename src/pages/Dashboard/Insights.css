@@ -604,7 +604,7 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
   padding: 12px 18px;
-  cursor: pointer; /* Makes the whole box feel clickable */
+  cursor: pointer;
   transition: all 0.3s ease;
 }
 
@@ -739,10 +739,9 @@
   }
 }
 
-/* 2. Dim the UI slightly when refreshing, but keep it visible */
-.insights-container.data-syncing {
+/ .insights-container.data-syncing {
   opacity: 0.7;
-  pointer-events: none; /* Prevent double clicks while loading */
+  pointer-events: none;
   transition: opacity 0.3s ease;
 }
 
@@ -768,7 +767,7 @@
   bottom: 25px;
   right: 25px;
   background: var(--primary-color);
-  color: white;
+  color: var(--text);
   border: none;
   padding: 18px 28px;
   border-radius: 30px;

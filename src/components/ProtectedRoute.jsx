@@ -6,7 +6,7 @@ import LoadingScreen from "./LoadingScreen";
 export default function ProtectedRoute({ children }) {
   const { user, loading } = useContext(AuthContext);
 
-  if (loading) return <LoadingScreen />;
+  if (loading) return <LoadingScreen message="Verifying access..." />;
 
   if (!user) {
     return <Navigate to="/auth" />;

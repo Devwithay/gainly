@@ -1,39 +1,39 @@
 import { useContext, useState, useEffect, lazy, Suspense } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import CaptainGainly from "./components/Onboarding/CaptainGainly";
 import {
   faMoon,
   faSun,
   faChartPie,
   faShield,
   faArrowTrendUp,
-  faCircleCheck,
 } from "@fortawesome/free-solid-svg-icons";
 import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import "./App.css";
-import AddSale from "./pages/Dashboard/Sales Hub/AddSale";
-import TrackSales from "./pages/Dashboard/Sales Hub/TrackSales";
-import Expenses from "./pages/Dashboard/Sales Hub/Expenses";
-import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
-import Auth from "./pages/Auth";
-import ForgotPassword from "./pages/ForgotPassword";
-import DashboardLayout from "./pages/Dashboard/DashboardLayout";
-import { ThemeContext } from "./Context Api/useTheme";
-import PageNotFound from "./pages/404";
-import Home from "./pages/Dashboard/Home";
 
-import Profile from "./pages/Dashboard/Profile";
-import { AuthProvider } from "./Context Api/AuthContext";
+import { ThemeContext } from "./Context Api/useTheme";
+import { AuthProvider, AuthContext } from "./Context Api/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
-import ExpenseHistory from "./pages/Dashboard/Sales Hub/ExpenseHistory";
-import Receipts from "./pages/Dashboard/Sales Hub/Receipts";
-import DebtList from "./pages/Dashboard/Sales Hub/DebtList";
-import { AuthContext } from "./Context Api/AuthContext";
-import API_BASE_URL from "./apiConfig";
 import LoadingScreen from "./components/LoadingScreen";
 
-const Insights = lazy(() => import("./pages/Dashboard/Insight"));
+const Auth = lazy(() => import("./pages/Auth"));
+const Home = lazy(() => import("./pages/Dashboard/Home"));
 const SalesHub = lazy(() => import("./pages/Dashboard/Sales Hub/SalesHub"));
+const AddSale = lazy(() => import("./pages/Dashboard/Sales Hub/AddSale"));
+const TrackSales = lazy(() => import("./pages/Dashboard/Sales Hub/TrackSales"));
+const Expenses = lazy(() => import("./pages/Dashboard/Sales Hub/Expenses"));
+const ExpenseHistory = lazy(
+  () => import("./pages/Dashboard/Sales Hub/ExpenseHistory"),
+);
+const Receipts = lazy(() => import("./pages/Dashboard/Sales Hub/Receipts"));
+const DebtList = lazy(() => import("./pages/Dashboard/Sales Hub/DebtList"));
+const Insights = lazy(() => import("./pages/Dashboard/Insight"));
+const Profile = lazy(() => import("./pages/Dashboard/Profile"));
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
+const PageNotFound = lazy(() => import("./pages/404"));
+
+import DashboardLayout from "./pages/Dashboard/DashboardLayout";
+import CaptainGainly from "./components/Onboarding/CaptainGainly";
 
 function LandingPage({ showModal, setShowModal }) {
   const { theme, setTheme } = useContext(ThemeContext);
@@ -222,7 +222,10 @@ function AppContent({ showModal, setShowModal }) {
     <>
       {user && onboardingStep < 13 && <CaptainGainly />}
 
-      <Suspense fallback={<LoadingScreen />}>
+      <Suspense
+        fallback={
+          <LoadingScreen message="Initializing your business command center..." />
+        }>
         <Routes>
           <Route
             path="/"

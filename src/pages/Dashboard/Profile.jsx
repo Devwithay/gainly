@@ -138,26 +138,24 @@ const Profile = () => {
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
-
     if (!file) return;
 
-    if (file.size > 2 * 1024 * 1024)
-      return showToast("File too large (Max 2MB)", "error");
-
-    const uploadData = new FormData();
-
-    uploadData.append("profilePic", file);
-
-    uploadData.append("phone", user.phone);
+    if (file.size > 5 * 1024 * 1024) {
+      return showToast("File is too heavy! Max 5MB.", "error");
+    }
 
     setUploading(true);
-
     setBottomSheet(false);
 
     try {
-      const res = await fetch(`${API_BASE_URL}/upload-avatar.php`, {
-        method: "POST",
+      const compressedFile = await compressImage(file);
 
+      const uploadData = new FormData();
+      uploadData.append("profilePic", compressedFile);
+      uploadData.append("phone", user.phone);
+
+      const res = await fetch(`https://api.gainly.com.ng/upload-avatar.php`, {
+        method: "POST",
         body: uploadData,
       });
 
@@ -165,14 +163,55 @@ const Profile = () => {
 
       if (result.status === "success") {
         updateUser({ profilePic: result.path });
-
-        showToast("Profile picture updated!");
+        showToast("Profile updated!");
       }
     } catch (err) {
       showToast("Upload failed", "error");
     } finally {
       setUploading(false);
     }
+  };
+
+  const compressImage = (file) => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (e) => {
+        const img = new Image();
+        img.src = e.target.result;
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          const MAX_WIDTH = 800;
+          const scale = MAX_WIDTH / img.width;
+          canvas.width = MAX_WIDTH;
+          canvas.height = img.height * scale;
+
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+          canvas.toBlob(
+            (blob) => {
+              resolve(
+                new File([blob], file.name.replace(/\.[^/.]+$/, ".jpg"), {
+                  type: "image/jpeg",
+                }),
+              );
+            },
+            "image/jpeg",
+            0.7,
+          );
+        };
+      };
+    });
+  };
+  const getAvatarUrl = () => {
+    if (!user?.profilePic) return "/default-avatar.png";
+
+    if (user.profilePic.startsWith("http")) return user.profilePic;
+
+    const cleanPath = user.profilePic.replace("api/", "").replace(/^\//, "");
+
+    return `https://api.gainly.com.ng/${cleanPath}`;
   };
 
   const removeProfilePic = async () => {
@@ -267,15 +306,12 @@ const Profile = () => {
 
           {user?.profilePic ? (
             <img
-              src={
-                user?.profilePic
-                  ? user.profilePic.startsWith("http")
-                    ? user.profilePic
-                    : `https://gainly.com.ng/${user.profilePic}`
-                  : "/default-avatar.png"
-              }
+              src={getAvatarUrl()}
               className="avatar-img"
               alt="Avatar"
+              onError={(e) => {
+                e.target.src = "/default-avatar.png";
+              }}
             />
           ) : (
             <div className="avatar">{user?.fullname?.charAt(0)}</div>
@@ -499,23 +535,30 @@ const Profile = () => {
           </div>
         </div>
       )}
-
       {viewImage && (
         <div
           className="image-viewer-overlay"
           onClick={() => setViewImage(false)}>
-          <img
-            src={
-              user?.profilePic
-                ? `${API_BASE_URL.replace("/api", "")}/${user.profilePic}`
-                : "/default.png"
-            }
-            alt="Full"
-          />
-
-          <button className="close-viewer" onClick={() => setViewImage(false)}>
-            Close
+          <button
+            className="close-viewer-btn"
+            onClick={() => setViewImage(false)}>
+            <FontAwesomeIcon icon={faChevronRight} rotation={90} />
           </button>
+
+          <div className="viewer-content" onClick={(e) => e.stopPropagation()}>
+            <img
+              src={getAvatarUrl()}
+              alt="Full Profile"
+              className="full-res-img"
+              onError={(e) => {
+                e.target.src = "/default.png";
+              }}
+            />
+
+            <div className="viewer-footer">
+              <span>{user?.fullname}</span>
+            </div>
+          </div>
         </div>
       )}
 

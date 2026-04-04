@@ -98,7 +98,7 @@ const TrackSales = ({ trackAction }) => {
 
       <div className="history-list">
         {loading ? (
-          <LoadingScreen />
+          <LoadingScreen message="Calculating your business growth..." />
         ) : filteredSales.length > 0 ? (
           filteredSales.map((sale) => {
             const saleProfit =

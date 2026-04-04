@@ -312,7 +312,11 @@ export const AuthProvider = ({ children }) => {
 
         deferredPrompt,
       }}>
-      {!loading ? children : <LoadingScreen />}
+      {!loading ? (
+        children
+      ) : (
+        <LoadingScreen message="Syncing your business profile..." />
+      )}
     </AuthContext.Provider>
   );
 };

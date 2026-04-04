@@ -16,9 +16,7 @@ function DashboardLayout() {
   const showNav = onboardingStep !== 3;
 
   return (
-    <>
-      <Outlet />
-
+    <div className="dashboard-layout">
       {showNav && (
         <nav className="bottom-nav">
           <NavLink to="/dashboard" className="nav-item">
@@ -39,7 +37,11 @@ function DashboardLayout() {
           </NavLink>
         </nav>
       )}
-    </>
+
+      <main className="content-area">
+        <Outlet />
+      </main>
+    </div>
   );
 }
 

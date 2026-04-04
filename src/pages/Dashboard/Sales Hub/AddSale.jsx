@@ -89,7 +89,6 @@ const AddSale = ({ trackAction }) => {
     }
   };
 
-  // Render logic priority
   if (isSubmitting) return <LoadingScreen message="Recording your profit..." />;
 
   return (

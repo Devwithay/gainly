@@ -12,7 +12,7 @@ import {
   faChevronRight,
   faImage,
 } from "@fortawesome/free-solid-svg-icons";
-import html2canvas from "html2canvas";
+
 import "../../../App.css";
 import "./Receipts.css";
 import LoadingScreen from "../../../components/LoadingScreen";
@@ -24,7 +24,7 @@ const Receipts = () => {
   const [sales, setSales] = useState([]);
   const [selectedSale, setSelectedSale] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [format, setFormat] = useState("image"); 
+  const [format, setFormat] = useState("image");
   const receiptRef = useRef(null);
 
   useEffect(() => {
@@ -40,6 +40,7 @@ const Receipts = () => {
 
   const downloadReceipt = async () => {
     if (receiptRef.current) {
+      const html2canvas = (await import("html2canvas")).default;
       const canvas = await html2canvas(receiptRef.current, {
         backgroundColor: null,
         scale: 3,
@@ -53,11 +54,11 @@ const Receipts = () => {
   };
 
   const handleWhatsAppShare = async (sale) => {
-  
     if (format === "image" && receiptRef.current) {
       try {
+        const html2canvas = (await import("html2canvas")).default;
         const canvas = await html2canvas(receiptRef.current, {
-          backgroundColor: "#ffffff", 
+          backgroundColor: "#ffffff",
           scale: 2,
         });
 
@@ -66,14 +67,12 @@ const Receipts = () => {
             type: "image/png",
           });
 
-        
           if (navigator.canShare && navigator.canShare({ files: [file] })) {
             await navigator.share({
               files: [file],
               title: `Receipt from ${user.bname || "Gainly Vendor"}`,
             });
           } else {
-         
             alert(
               "Your browser doesn't support direct image sharing. Please use 'Save Image' and send manually, or switch to 'WhatsApp Text' mode.",
             );
@@ -81,13 +80,12 @@ const Receipts = () => {
         }, "image/png");
 
         if (onboardingStep === 6) completeStep(6);
-        return; 
+        return;
       } catch (error) {
         console.error("Error sharing image:", error);
       }
     }
 
-  
     const businessName = user.bname || "Our Store";
     const amount = Number(sale.amount).toLocaleString();
     const paid = Number(sale.amount_paid).toLocaleString();
@@ -117,7 +115,8 @@ const Receipts = () => {
     window.open(`https://wa.me/?text=${message}`, "_blank");
     if (onboardingStep === 6) completeStep(6);
   };
-  if (loading) return <LoadingScreen />;
+  if (loading)
+    return <LoadingScreen message="Preparing your official receipts..." />;
 
   return (
     <div className="receipts-container">
@@ -130,7 +129,6 @@ const Receipts = () => {
 
       {selectedSale ? (
         <div className="receipt-view animate-in">
-        
           <div className="format-toggle-container">
             <div className={`toggle-slider ${format}`}></div>
             <button
@@ -197,7 +195,6 @@ const Receipts = () => {
                     </span>
                   </div>
 
-               
                   <div
                     className={`detail-row balance-row ${Number(selectedSale.debt_balance) > 0 ? "has-debt" : ""}`}>
                     <span className="d-label">Balance Due</span>
@@ -215,7 +212,12 @@ const Receipts = () => {
                     />
                     <span>Secured by Gainly Business Suite</span>
                   </div>
-                  <p> Hey {selectedSale.customer_name}, thanks for choosing {user.bname}! Your support keeps our small business thriving!</p>
+                  <p>
+                    {" "}
+                    Hey {selectedSale.customer_name}, thanks for choosing{" "}
+                    {user.bname}! Your support keeps our small business
+                    thriving!
+                  </p>
                   <p className="copyright-tiny">
                     Official Digital Proof of Purchase
                   </p>
