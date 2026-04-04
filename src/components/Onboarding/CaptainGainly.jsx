@@ -37,12 +37,12 @@ const CaptainGainly = () => {
       },
       {
         title: "The Sales Hub",
-        text: "Great! Now, let's enter  Sales Hub, your revenue command center to record your first sale. Click the highlighted icon!",
+        text: "Great! Now, let's enter  Sales Hub, your revenue command center to record your first sale. Click the highlighted icon below!",
         target: "nav-sales-hub",
       },
       {
         title: "Log Your First Sale",
-        text: "Welcome to the control center! Click 'Add New Sale' to start recording your business revenue.",
+        text: "Welcome to the control center! Click 'Add New Sale' to start recording your business revenue. scroll down 👇",
         target: "btn-add-sale",
       },
       {

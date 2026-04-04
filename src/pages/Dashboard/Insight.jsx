@@ -8,6 +8,7 @@ import {
   faLightbulb,
   faChartPie,
   faArrowDown,
+  faCheckCircle,
   faBullseye,
   faCalendarAlt,
   faShareAlt,
@@ -92,6 +93,14 @@ const Insights = () => {
       console.error("Share failed", err);
     }
   };
+  const getAvatarUrl = () => {
+    if (!user?.profilePic) return "/default-avatar.png";
+    if (user.profilePic.startsWith("http")) return user.profilePic;
+    const cleanPath = user.profilePic.replace("api/", "").replace(/^\//, "");
+    return `https://api.gainly.com.ng/${cleanPath}`;
+  };
+
+  const firstName = user?.fullname ? user.fullname.split(" ")[0] : "CEO";
 
   const totalCustomers = data?.retentionData?.length || 0;
   const topCustomer = data?.retentionData?.[0]?.customer_name || "New Legend";
@@ -134,7 +143,12 @@ const Insights = () => {
 
       <header className="insights-header">
         <h1>Performance</h1>
-
+        <div
+          className={`floating-flex-btn ${revenue === 0 ? "disabled" : ""}`}
+          onClick={() => revenue > 0 && setShowShare(true)}>
+          <FontAwesomeIcon icon={revenue > 0 ? faShareNodes : faBullseye} />
+          <span>{revenue > 0 ? "Flex" : "Goal"}</span>
+        </div>
         <div className="filter-container">
           <label className="time-selector-wrapper">
             <FontAwesomeIcon icon={faCalendarAlt} className="cal-icon" />
@@ -253,19 +267,6 @@ const Insights = () => {
           })}
         </div>
       </section>
-      <div className="floating-flex-btn">
-        <FontAwesomeIcon icon={faShareAlt} className="cal-icon" />
-        <button
-          style={{
-            background: "transparent",
-            border: "none",
-            fontWeight: "bolder",
-            fontSize: "1rem",
-          }}
-          onClick={() => setShowShare(true)}>
-          Flex
-        </button>
-      </div>
 
       <section className="glass-card chart-card">
         <h3>Revenue Trend (7D)</h3>
@@ -359,44 +360,80 @@ const Insights = () => {
       </section>
 
       {showShare && (
-        <div className="share-overlay">
-          <div className="share-modal">
+        <div className="share-overlay" onClick={() => setShowShare(false)}>
+          <div className="share-modal" onClick={(e) => e.stopPropagation()}>
             <div className="share-capture-area" ref={shareAreaRef}>
-              <div className="flex-card-glass">
-                <div className="glass-inner">
-                  <div className="flex-logo">
-                    GAINLY <span className="logo-dot">.</span>
-                  </div>
+              <div className="liquid-blob blob-1"></div>
+              <div className="liquid-blob blob-2"></div>
 
-                  <div className="flex-main-content">
-                    <p className="flex-label">BUSINESS STATUS</p>
-                    <h2 className="flex-status-text">{status.label}</h2>
-                    <div className="flex-divider"></div>
-
-                    <div className="flex-stats-grid">
-                      <div className="flex-stat-item">
-                        <label>Revenue</label>
-                        <p>₦{revenue.toLocaleString()}</p>
-                      </div>
-                      <div className="flex-stat-item">
-                        <label>Net Profit</label>
-                        <p>₦{netProfit.toLocaleString()}</p>
-                      </div>
+              <div className="liquid-glass-card">
+                <div className="card-header">
+                  <div className="user-profile">
+                    <img
+                      src={getAvatarUrl()}
+                      alt="Profile"
+                      className="flex-avatar"
+                      onError={(e) => (e.target.src = "/default-avatar.png")}
+                    />
+                    <div className="user-id">
+                      <h4 className="flex-name-display">
+                        {firstName}
+                        <FontAwesomeIcon
+                          icon={faCheckCircle}
+                          className="verified-check-icon"
+                        />
+                      </h4>
+                      <p>{user?.bname || "Gainly Vendor"}</p>
                     </div>
                   </div>
+                </div>
 
-                  <div className="flex-footer-glass">
-                    <p>Verified on Gainly Business Hub</p>
+                <div className="main-stats">
+                  <div className="flex-stat-group">
+                    <label>TOTAL REVENUE</label>
+                    <h2 className="big-amount">₦{revenue.toLocaleString()}</h2>
                   </div>
+
+                  <div
+                    className="profit-badge"
+                    style={{ backgroundColor: status.color }}>
+                    {status.label}
+                  </div>
+                </div>
+
+                <div className="insights-ribbon">
+                  <div className="ribbon-item">
+                    <label>Net Profit</label>
+                    <p>₦{netProfit.toLocaleString()}</p>
+                  </div>
+                  <div className="ribbon-item">
+                    <label>Top Customer</label>
+                    <p className="truncate-text">
+                      {topCustomer !== "New Legend" ? topCustomer : "---"}
+                    </p>
+                  </div>
+                  <div className="ribbon-item">
+                    <label>Customers</label>
+                    <p>{totalCustomers}</p>
+                  </div>
+                </div>
+
+                <div className="card-footer">
+                  <p>GAINLY BUSINESS HUB</p>
+                  <div className="footer-dot"></div>
+                  <p>{new Date().toLocaleDateString("en-GB")}</p>
                 </div>
               </div>
             </div>
+
             <div className="modal-buttons">
-              <button className="download-btn" onClick={handleShare}>
-                Save Image
+              <button className="download-btn-premium" onClick={handleShare}>
+                Save to Gallery
               </button>
-              <button className="close-btn" onClick={() => setShowShare(false)}>
-                Not Now
+              <button
+                className="close-btn-minimal"
+                onClick={() => setShowShare(false)}>
+                Close
               </button>
             </div>
           </div>
