@@ -8,7 +8,7 @@ import {
   faArrowTrendUp,
 } from "@fortawesome/free-solid-svg-icons";
 import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
 import "./App.css";
 
 import { ThemeContext } from "./Context Api/useTheme";
@@ -38,6 +38,7 @@ import CaptainGainly from "./components/Onboarding/CaptainGainly";
 function LandingPage({ showModal, setShowModal }) {
   const { theme, setTheme } = useContext(ThemeContext);
   const { user } = useContext(AuthContext);
+  const goTo = useNavigate();
 
   const handleJoinWaitlist = () => {
     window.open(
@@ -68,7 +69,7 @@ function LandingPage({ showModal, setShowModal }) {
             <div className="modal-actions">
               <button
                 className="apple-btn primary"
-                onClick={() => navigate("/auth")}>
+                onClick={() => goTo("/auth")}>
                 Get Started
               </button>
               <button
@@ -89,7 +90,7 @@ function LandingPage({ showModal, setShowModal }) {
       <main className={`landing-container ${showModal ? "blurred" : ""}`}>
         <nav className="floating-nav">
           <div className="nav-logo">GAINLY</div>
-          <button onClick={() => navigate("/auth")} className="nav-cta">
+          <button onClick={() => goTo("/auth")} className="nav-cta">
             Log In
           </button>
         </nav>
@@ -109,7 +110,7 @@ function LandingPage({ showModal, setShowModal }) {
           <div className="hero-actions">
             <button
               className="hero-btn-primary shine"
-              onClick={() => navigate("/auth")}>
+              onClick={() => goTo("/auth")}>
               Launch Your Business
             </button>
             <button className="hero-btn-secondary" onClick={handleJoinWaitlist}>
@@ -161,9 +162,7 @@ function LandingPage({ showModal, setShowModal }) {
         <section className="closing-cta glass-v2">
           <h2>Ready to go pro?</h2>
           <p>Don't just sell. Build a legacy.</p>
-          <button
-            className="hero-btn-primary"
-            onClick={() => navigate("/auth")}>
+          <button className="hero-btn-primary" onClick={() => goTo("/auth")}>
             Create Free Account
           </button>
         </section>
@@ -190,7 +189,7 @@ export default function App() {
 
 function AppContent({ showModal, setShowModal }) {
   const { loading, user, onboardingStep } = useContext(AuthContext);
-  const navigate = useNavigate();
+
   const trackAction = (actionType) => {
     const currentHistory = JSON.parse(
       localStorage.getItem("gainly_history") || "[]",
@@ -219,7 +218,7 @@ function AppContent({ showModal, setShowModal }) {
             path="/"
             element={
               user ? (
-                <navigate to="/dashboard" replace />
+                <Navigate to="/dashboard" replace />
               ) : (
                 <LandingPage
                   showModal={showModal}
