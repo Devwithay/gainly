@@ -12,7 +12,7 @@
   --bg: #f0f2f5;
   --text: #1d1d1f;
   --muted: #6e6e73;
-  --primary-color: #0066ff; /* Your Brand Blue */
+  --primary-color: #0066ff;
   --green: #10b981;
 }
 
@@ -116,7 +116,7 @@ body {
   width: 100%;
   max-width: 400px;
   padding: 40px;
-  /* Use the new liquid class */
+
   composes: glass-liquid;
 }
 
@@ -739,7 +739,6 @@ button.cta-btn::-moz-focus-inner {
   min-height: 100vh;
 }
 
-/* FLOATING NAV */
 .floating-nav {
   position: fixed;
   top: 20px;
@@ -777,7 +776,6 @@ button.cta-btn::-moz-focus-inner {
   cursor: pointer;
 }
 
-/* HERO V2 */
 .hero-v2 {
   padding: 140px 20px 80px;
   text-align: center;
@@ -818,7 +816,6 @@ button.cta-btn::-moz-focus-inner {
   line-height: 1.6;
 }
 
-/* BUTTONS */
 .hero-actions {
   display: flex;
   gap: 15px;
@@ -852,7 +849,6 @@ button.cta-btn::-moz-focus-inner {
   gap: 10px;
 }
 
-/* FEATURE CARDS */
 .features-section {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -940,7 +936,6 @@ button.cta-btn::-moz-focus-inner {
   }
 }
 
-/* MODAL FIX */
 .premium-glass {
   background: rgba(255, 255, 255, 0.85);
   border: 1px solid rgba(255, 255, 255, 0.5);
@@ -1037,7 +1032,7 @@ button.cta-btn::-moz-focus-inner {
   height: 16px;
   accent-color: var(--primary-color);
 }
-/* --- LIQUID GLASS CORE --- */
+
 .glass-liquid {
   background: var(--glass-bg);
   backdrop-filter: var(--glass-blur);
@@ -1052,7 +1047,6 @@ button.cta-btn::-moz-focus-inner {
   transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-/* --- FORM ELEMENTS --- */
 .input-group {
   position: relative;
   margin-bottom: 18px;
@@ -1087,7 +1081,6 @@ button.cta-btn::-moz-focus-inner {
   box-shadow: 0 0 15px rgba(0, 102, 255, 0.15);
 }
 
-/* --- BUTTONS --- */
 .primary-btn {
   width: 100%;
   padding: 16px;
@@ -1119,7 +1112,6 @@ button.cta-btn::-moz-focus-inner {
   background: rgba(255, 255, 255, 0.1);
 }
 
-/* --- NICHE SELECTOR --- */
 .niche-selector-container {
   display: flex;
   flex-wrap: wrap;

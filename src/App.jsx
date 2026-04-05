@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect, lazy, Suspense } from "react";
+import { useContext, useState, lazy, Suspense } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faMoon,
@@ -38,7 +38,6 @@ import CaptainGainly from "./components/Onboarding/CaptainGainly";
 function LandingPage({ showModal, setShowModal }) {
   const { theme, setTheme } = useContext(ThemeContext);
   const { user } = useContext(AuthContext);
-  const navigate = useNavigate();
 
   const handleJoinWaitlist = () => {
     window.open(
@@ -49,7 +48,6 @@ function LandingPage({ showModal, setShowModal }) {
 
   return (
     <div className="landing-wrapper">
-      {/* THEME TOGGLE DOCK */}
       <div className="top-actions">
         <button
           className="glass-toggle"
@@ -83,14 +81,12 @@ function LandingPage({ showModal, setShowModal }) {
         </div>
       )}
 
-      {/* BACKGROUND BLOBS */}
       <div className="background-elements">
         <div className="floating-blob green-blob"></div>
         <div className="floating-blob blue-blob"></div>
       </div>
 
       <main className={`landing-container ${showModal ? "blurred" : ""}`}>
-        {/* NAV DOCK */}
         <nav className="floating-nav">
           <div className="nav-logo">GAINLY</div>
           <button onClick={() => navigate("/auth")} className="nav-cta">
@@ -98,7 +94,6 @@ function LandingPage({ showModal, setShowModal }) {
           </button>
         </nav>
 
-        {/* HERO SECTION */}
         <section className="hero-v2">
           <div className="badge-pill">Built for the next-gen Student CEO</div>
           <h1 className="main-headline">
@@ -123,13 +118,11 @@ function LandingPage({ showModal, setShowModal }) {
           </div>
         </section>
 
-        {/* PROOF STRIP */}
         <div className="trust-strip">
           <span>TRUSTED BY 100+ UNILORIN VENDORS</span>
           <div className="divider-line"></div>
         </div>
 
-        {/* FEATURE GRID */}
         <section className="features-section">
           <div className="feature-card glass-v2">
             <div className="icon-box purple-box">
@@ -165,7 +158,6 @@ function LandingPage({ showModal, setShowModal }) {
           </div>
         </section>
 
-        {/* FINAL CTA */}
         <section className="closing-cta glass-v2">
           <h2>Ready to go pro?</h2>
           <p>Don't just sell. Build a legacy.</p>
@@ -198,7 +190,7 @@ export default function App() {
 
 function AppContent({ showModal, setShowModal }) {
   const { loading, user, onboardingStep } = useContext(AuthContext);
-
+  const navigate = useNavigate();
   const trackAction = (actionType) => {
     const currentHistory = JSON.parse(
       localStorage.getItem("gainly_history") || "[]",
@@ -227,7 +219,7 @@ function AppContent({ showModal, setShowModal }) {
             path="/"
             element={
               user ? (
-                <Navigate to="/dashboard" replace />
+                <navigate to="/dashboard" replace />
               ) : (
                 <LandingPage
                   showModal={showModal}
