@@ -1,4 +1,4 @@
-import { useContext, useState, lazy, Suspense } from "react";
+import { useContext, useState, useEffect, lazy, Suspense } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faMoon,
@@ -189,7 +189,17 @@ export default function App() {
 
 function AppContent({ showModal, setShowModal }) {
   const { loading, user, onboardingStep } = useContext(AuthContext);
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (loading && window.location.pathname === "/") {
+      const timer = setTimeout(() => {
+        console.log("Taking too long... Diverting to Auth Lifeboat");
+        navigate("/auth");
+      }, 5000); // 5 Seconds
 
+      return () => clearTimeout(timer);
+    }
+  }, [loading, navigate]);
   const trackAction = (actionType) => {
     const currentHistory = JSON.parse(
       localStorage.getItem("gainly_history") || "[]",
