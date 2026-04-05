@@ -40,10 +40,6 @@ function LandingPage({ showModal, setShowModal }) {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (user) navigate("/dashboard");
-  }, [user, navigate]);
-
   const handleJoinWaitlist = () => {
     window.open(
       "https://wa.me/2347030318983?text=Hi%20I%20want%to%20join%20Gainly%20Community.",
@@ -215,7 +211,7 @@ function AppContent({ showModal, setShowModal }) {
   };
 
   if (loading) {
-    return LoadingScreen;
+    return <LoadingScreen message="Syncing your business profile..." />;
   }
 
   return (
@@ -230,7 +226,14 @@ function AppContent({ showModal, setShowModal }) {
           <Route
             path="/"
             element={
-              <LandingPage showModal={showModal} setShowModal={setShowModal} />
+              user ? (
+                <Navigate to="/dashboard" replace />
+              ) : (
+                <LandingPage
+                  showModal={showModal}
+                  setShowModal={setShowModal}
+                />
+              )
             }
           />
           <Route path="/auth" element={<Auth />} />

@@ -7,7 +7,7 @@
 .add-sale-page {
   padding: 20px;
   background: var(--bg);
-  /* Liquid Blobs Background Effect */
+
   background-image:
     radial-gradient(
       circle at 10% 20%,
@@ -23,7 +23,6 @@
   color: var(--text);
 }
 
-/* Glass Header */
 .add-sale-header {
   display: flex;
   align-items: center;
@@ -83,14 +82,12 @@
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
 }
 
-/* Grid for Prices - Now Side-by-Side */
 .grid-2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 15px;
 }
 
-/* Input Boxes */
 .input-box {
   margin-bottom: 15px;
 }
@@ -123,7 +120,7 @@
 .input-box select {
   width: 100%;
   padding: 14px 15px;
-  padding-left: 42px; /* Adjust if no icon */
+  padding-left: 42px;
   background: var(--glass-input);
   border: 1px solid var(--glass-border);
   border-radius: 18px;
@@ -139,7 +136,6 @@
   box-shadow: 0 0 15px rgba(124, 58, 237, 0.2);
 }
 
-/* Toggle Pill */
 .type-pill-toggle {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -167,7 +163,6 @@
   transform: translateY(-2px);
 }
 
-/* The CEO Button */
 .gainly-submit-btn {
   width: 100%;
   padding: 20px;
@@ -186,7 +181,6 @@
   gap: 12px;
 }
 
-/* Success Animation */
 .success-overlay {
   text-align: center;
   padding: 40px 10px;

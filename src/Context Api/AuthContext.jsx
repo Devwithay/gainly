@@ -110,33 +110,23 @@ export const AuthProvider = ({ children }) => {
 
         if (isMounted.current) {
           if (data.authenticated && data.user?.phone) {
-            // CRITICAL: Set the step from the DATABASE immediately
-
             const dbStep = parseInt(data.user.onboarding_step) || 0;
-
-            // If they are already in the PWA, don't let them see Step 1 (Install)
-
             const finalStep = dbStep === 1 && isRunningInPWA() ? 2 : dbStep;
 
             setOnboardingStep(finalStep);
 
-            // Fetch the profile but DON'T let the user see the app until this is done
-
             await fetchUserProfile(data.user.phone);
           } else {
             setUser(null);
-
             setOnboardingStep(0);
           }
         }
       } catch (err) {
         console.error("Auth init failed", err);
+        setUser(null);
+        setOnboardingStep(0);
       } finally {
-        if (isMounted.current) {
-          // Only stop the loading spinner once EVERYTHING is set
-
-          setLoading(false);
-        }
+        setLoading(false);
       }
     };
 
@@ -192,27 +182,17 @@ export const AuthProvider = ({ children }) => {
 
         body: formData,
 
-        credentials: "include", // Essential for sessions
+        credentials: "include",
       });
 
       const data = await response.json();
 
       if (data.status === "success") {
-        // 1. Set the step immediately from the login response
-
         setOnboardingStep(parseInt(data.onboarding_step) || 0);
-
-        // 2. WAIT 500ms for the browser to lock in the Session Cookie
-
         await new Promise((resolve) => setTimeout(resolve, 500));
-
-        // 3. Now fetch the profile
-
         const profile = await fetchUserProfile(data.phone || phone);
-
-        return !!profile; // Only return true if profile fetch worked
+        return !!profile;
       }
-
       return false;
     } catch (error) {
       console.error("Login critical failure:", error);
@@ -220,7 +200,6 @@ export const AuthProvider = ({ children }) => {
       return false;
     }
   };
-
   const completeStep = async (stepNumber, jumpTo = null) => {
     const nextStep = jumpTo !== null ? jumpTo : stepNumber + 1;
 
@@ -278,7 +257,6 @@ export const AuthProvider = ({ children }) => {
 
     setHasExpenses(null);
   }, []);
-
   const updateUser = useCallback((newData) => {
     setUser((prev) => (prev ? { ...prev, ...newData } : null));
   }, []);
@@ -287,29 +265,17 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider
       value={{
         user,
-
         login,
-
         isRunningInPWA,
-
         loading,
-
         onboardingStep,
-
         logout,
-
         register,
-
         updateUser,
-
         completeStep,
-
         triggerAndroidInstall,
-
         hasExpenses,
-
         setHasExpenses,
-
         deferredPrompt,
       }}>
       {!loading ? (
