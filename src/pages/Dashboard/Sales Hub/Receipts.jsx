@@ -99,7 +99,10 @@ const Receipts = () => {
     const product = sale.product_name;
     const customer = sale.customer_name || "Valued Customer";
     const payment = sale.payment_method || "Not Specified";
-
+    const customNote =
+      sale.receipt_message && sale.receipt_message.trim() !== ""
+        ? sale.receipt_message
+        : `Hey ${customer}, thanks for choosing *${businessName}*! Your support keeps our small business thriving! 🚀`;
     const message =
       `*RECEIPT FROM ${businessName.toUpperCase()}*%0A` +
       `--------------------------%0A` +
@@ -113,7 +116,7 @@ const Receipts = () => {
       `*Payment Method:* ${payment}%0A` +
       `*Date:* ${date}%0A` +
       `--------------------------%0A` +
-      `Hey ${customer}, thanks for choosing *${businessName}*! Your support keeps our small business thriving! 🚀%0A%0A` +
+      `${customNote}%0A%0A` +
       `_Generated via Gainly Business Suite._%0A` +
       `👉 *Create your own receipts here:* https://gainly.com.ng`;
 
@@ -218,10 +221,10 @@ const Receipts = () => {
                     <span>Secured by Gainly Business Suite</span>
                   </div>
                   <p>
-                    {" "}
-                    Hey {selectedSale.customer_name}, thanks for choosing{" "}
-                    {user.bname}! Your support keeps our small business
-                    thriving!
+                    {selectedSale.receipt_message &&
+                    selectedSale.receipt_message.trim() !== ""
+                      ? selectedSale.receipt_message
+                      : `Hey ${selectedSale.customer_name || "Valued Customer"}, thanks for choosing ${user.bname || "us"}! Your support keeps our small business thriving!`}
                   </p>
                   <p className="copyright-tiny">
                     Official Digital Proof of Purchase

@@ -24,6 +24,7 @@ const AddSale = ({ trackAction }) => {
   const [totalAmount, setTotalAmount] = useState("");
   const [amountPaid, setAmountPaid] = useState("");
   const [cost, setCost] = useState("");
+  const [message, setMessage] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(
     user?.categories?.[0] || "General",
   );
@@ -61,6 +62,7 @@ const AddSale = ({ trackAction }) => {
     formData.append("amount", finalTotal);
     formData.append("amount_paid", normalize(amountPaid));
     formData.append("cost_price", normalize(cost));
+    formData.append("receipt_message", message);
     formData.append("category", selectedCategory);
     formData.append("item_type", itemType);
 
@@ -91,47 +93,44 @@ const AddSale = ({ trackAction }) => {
 
   if (isSubmitting) return <LoadingScreen message="Recording your profit..." />;
 
+  // ... imports stay same
+
   return (
     <div className="add-sale-page">
       <header className="add-sale-header">
         <button className="icon-btn-back" onClick={() => navigate(-1)}>
           <FontAwesomeIcon icon={faChevronLeft} />
         </button>
-        <h1>Log Order</h1>
-        <div className="header-dot"></div>
+        <h1 style={{ fontSize: "1.5rem", fontWeight: 900 }}>New Sale</h1>
       </header>
 
       <div className="add-sale-content">
         {success ? (
-          /* THIS WILL NOW SHOW PROPERLY */
-          <div
-            className="success-overlay"
-            style={{ textAlign: "center", padding: "50px 20px" }}>
+          <div className="success-overlay">
             <FontAwesomeIcon
               icon={faCheckCircle}
               className="success-icon-glow"
-              style={{
-                fontSize: "80px",
-                color: "#27ae60",
-                marginBottom: "20px",
-              }}
             />
-            <h2 style={{ fontSize: "24px", fontWeight: "bold" }}>
-              Sale Logged!
+            <h2 style={{ marginTop: "20px", fontSize: "1.8rem" }}>
+              CEO Move! 🚀
             </h2>
-            <p>Your business is growing, CEO! 🚀</p>
+            <p style={{ opacity: 0.6 }}>
+              Sale successfully recorded in your history.
+            </p>
           </div>
         ) : (
           <form className="gainly-form" onSubmit={handleSubmit}>
+            {/* Business Selection - Compact */}
             <section className="form-card highlight">
-              <div className="input-box">
+              <div className="input-box" style={{ marginBottom: 0 }}>
                 <label>
-                  <FontAwesomeIcon icon={faTag} /> Which Business?
+                  <FontAwesomeIcon icon={faTag} /> Business Unit
                 </label>
                 <select
-                  className="gainly-select"
                   value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}>
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  style={{ paddingLeft: "15px" }} // No icon needed for select
+                >
                   {user?.categories?.map((cat, i) => (
                     <option key={i} value={cat}>
                       {cat}
@@ -141,6 +140,7 @@ const AddSale = ({ trackAction }) => {
               </div>
             </section>
 
+            {/* Core Info */}
             <section className="form-card">
               <div className="input-box">
                 <label>Customer Name</label>
@@ -159,46 +159,81 @@ const AddSale = ({ trackAction }) => {
               </div>
 
               <div className="input-box">
-                <label>Product / Service Name*</label>
-                <input
-                  type="text"
-                  placeholder="e.g. Wig Installation"
-                  value={product}
-                  onChange={(e) => setProduct(e.target.value)}
-                  required
-                />
+                <label>Product/Service*</label>
+                <div className="input-wrapper">
+                  <FontAwesomeIcon
+                    icon={faTag}
+                    className="input-icon"
+                    style={{ opacity: 0.3 }}
+                  />
+                  <input
+                    type="text"
+                    placeholder="What did they buy?"
+                    value={product}
+                    onChange={(e) => setProduct(e.target.value)}
+                    required
+                  />
+                </div>
               </div>
 
               <div className="grid-2">
                 <div className="input-box">
-                  <label>Total Price (₦)*</label>
+                  <label>Total (₦)*</label>
                   <input
                     type="text"
                     placeholder="50k"
                     value={totalAmount}
                     onChange={(e) => setTotalAmount(e.target.value)}
+                    style={{ paddingLeft: "15px" }}
                     required
                   />
                 </div>
                 <div className="input-box">
-                  <label>Amount Paid (₦)</label>
+                  <label>Paid (₦)</label>
                   <input
                     type="text"
                     placeholder="20k"
                     value={amountPaid}
                     onChange={(e) => setAmountPaid(e.target.value)}
+                    style={{ paddingLeft: "15px" }}
                   />
                 </div>
               </div>
             </section>
-            <section className="form-card secondary">
+
+            <section className="form-card">
+              <div className="grid-2">
+                <div className="input-box">
+                  <label>Cost Price</label>
+                  <input
+                    type="text"
+                    placeholder="Optional"
+                    value={cost}
+                    onChange={(e) => setCost(e.target.value)}
+                    style={{ paddingLeft: "15px" }}
+                  />
+                </div>
+                <div className="input-box">
+                  <label>Method</label>
+                  <select
+                    value={paymentMethod}
+                    onChange={(e) => setPaymentMethod(e.target.value)}
+                    style={{ paddingLeft: "15px" }}>
+                    <option value="Transfer">Transfer</option>
+                    <option value="Cash">Cash</option>
+                    <option value="POS">POS</option>
+                  </select>
+                </div>
+              </div>
+
               <div className="input-box">
-                <label>Cost Price (Optional)</label>
+                <label>Receipt Note</label>
                 <input
                   type="text"
-                  placeholder="15k"
-                  value={cost}
-                  onChange={(e) => setCost(e.target.value)}
+                  placeholder="Personal touch..."
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  style={{ paddingLeft: "15px" }}
                 />
               </div>
 
@@ -216,30 +251,13 @@ const AddSale = ({ trackAction }) => {
                   Service
                 </button>
               </div>
-
-              <div className="input-box">
-                <label>
-                  <FontAwesomeIcon icon={faWallet} /> Payment Method
-                </label>
-                <select
-                  value={paymentMethod}
-                  onChange={(e) => setPaymentMethod(e.target.value)}>
-                  <option value="Transfer">Bank Transfer</option>
-                  <option value="Cash">Cash</option>
-                  <option value="POS">POS</option>
-                  <option value="Split">Split Payment</option>
-                </select>
-              </div>
             </section>
 
             <button
               type="submit"
-              className={`gainly-submit-btn ${!isFormValid ? "disabled-btn" : ""}`}
+              className="gainly-submit-btn"
               disabled={!isFormValid}
-              style={{
-                opacity: isFormValid ? 1 : 0.5,
-                cursor: isFormValid ? "pointer" : "not-allowed",
-              }}>
+              style={{ opacity: isFormValid ? 1 : 0.5 }}>
               <FontAwesomeIcon icon={faCirclePlus} /> Log Sale
             </button>
           </form>
