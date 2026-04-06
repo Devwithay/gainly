@@ -1,6 +1,24 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <script>
+      window.addEventListener(
+        "error",
+        function (e) {
+          if (
+            e.target.tagName === "SCRIPT" ||
+            e.message.includes("module script")
+          ) {
+            console.warn(
+              "Script error detected. Force reloading latest version...",
+            );
+
+            window.location.reload(true);
+          }
+        },
+        true,
+      );
+    </script>
     <meta charset="UTF-8" />
     <meta
       name="description"
